@@ -7,7 +7,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
-
+#include <fstream>
 
 #include "Player.h"
 #include "Pronouns.h"
@@ -17,6 +17,8 @@ class Game
 public:
 
 	void delay(int delayTime);
+
+	void loadGame();
 
 	void settingHowThePlayerShouldBeCalled(Player* player);
 	void settingThePlayerGender(Player* player);

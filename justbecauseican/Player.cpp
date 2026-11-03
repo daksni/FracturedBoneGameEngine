@@ -47,8 +47,10 @@ void Player::setPlayerClass(int pClass) {
 	playerClass = pClass;
 }
 
-//Worth noting: there shall be more attr to change... for now though
-//that is all my lazy ass has built.
+//Worth noting: there shall have more attr relative to class, or independent attr.
+//They may be declared within class based escopes, or elsewhere in the player code.
+//The simple application below changes the main attr in relation to class, and in such fashion
+//new indenpendent or class based attr may be added.
 void Player::setPlayerAttributesAccordinglyToClass() {
 	switch (Player::getPlayerClass()) {
 	case PlayerClass::KNIGHT:

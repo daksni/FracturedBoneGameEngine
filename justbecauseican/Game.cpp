@@ -11,6 +11,12 @@ void Game::delay(int delayTime) {
 	std::this_thread::sleep_for(std::chrono::seconds(delayTime));
 }
 
+//============================ CHECK FOR SAVE FILE =======================================//
+void Game::loadGame(){
+	//TODO: read for save files before setup.
+}
+
+
 //============================== GAME SETUP FUNCTIONS ====================================//
 
 void Game::settingHowThePlayerShouldBeCalled(Player* player) {
@@ -81,7 +87,6 @@ void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
 		" belongs to?\nType [1] for knight, [2] for Wizard, [3] for Bard, [4] for Noble or [5] for Wretch: ";
 	std::getline(std::cin, setupClass);
 
-	//Maybe there are better ways of doing this... but let me be.
 	while (setupClass.empty() || (setupClass != classWheel.INPUT_KNIGHT &&
 		setupClass != classWheel.INPUT_WIZARD &&
 		setupClass != classWheel.INPUT_BARD &&
@@ -124,10 +129,13 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 }
 
 int Game::run() {
+
+	loadGame();
+
 	//Create pointers.
 	Player* player = new Player();
 	Pronouns* pronouns = new Pronouns();
-	
+
 	setup(player, pronouns);
 
 	//Delete and Nullify pointers to PREVENT MEMORY LEAK!!!!

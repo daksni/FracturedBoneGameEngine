@@ -7,7 +7,6 @@
 //MAKE A NEW COPY FOR EACH SCENE.
 
 #pragma once
-#include <fstream>
 #include "Game.h"
 
 class SceneManager

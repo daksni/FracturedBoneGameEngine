@@ -8,6 +8,9 @@
 
 #include "SceneTemplate.h"
 
+//If you want to make this the first scene, and generate a save file,
+//Change "isFirstScene" to "true" in "SceneTemplate.h" otherwise, this
+//function will always attempt to load a previous save that may be nonexistent.
 void SceneManager::getSaveData() {
 	if (isFirstScene == true) {
 		//TODO: make new save file
