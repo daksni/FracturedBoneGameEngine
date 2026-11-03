@@ -17,5 +17,5 @@ void SceneManager::playScene(Player* player, Pronouns* pronouns) {
 }
 
 int SceneManager::genNewSave() {
-
+	return 0;
 }
