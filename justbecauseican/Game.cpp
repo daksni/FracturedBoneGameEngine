@@ -31,7 +31,6 @@ void Game::settingHowThePlayerShouldBeCalled(Player* player) {
 
 void Game::settingThePlayerGender(Player* player) {
 
-	//This is aesthetic only.
 	const struct Gender {
 		const std::string INPUT_MALE = "1";
 		const std::string INPUT_FEMALE = "2";
@@ -81,7 +80,6 @@ void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
 		" belongs to?\nType [1] for knight, [2] for Wizard, [3] for Bard, [4] for Noble or [5] for Wretch: ";
 	std::getline(std::cin, setupClass);
 
-	//Maybe there are better ways of doing this... but let me be.
 	while (setupClass.empty() || (setupClass != classWheel.INPUT_KNIGHT &&
 		setupClass != classWheel.INPUT_WIZARD &&
 		setupClass != classWheel.INPUT_BARD &&
@@ -124,13 +122,13 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 }
 
 int Game::run() {
-	//Create pointers.
+	//If any new pointer is made, declare them here.
 	Player* player = new Player();
 	Pronouns* pronouns = new Pronouns();
 	
 	setup(player, pronouns);
 
-	//Delete and Nullify pointers to PREVENT MEMORY LEAK!!!!
+	//Delete and Nullify pointers.
 	delete player;
 	player = nullptr;
 
