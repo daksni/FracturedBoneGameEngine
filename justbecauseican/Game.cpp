@@ -37,7 +37,6 @@ void Game::settingHowThePlayerShouldBeCalled(Player* player) {
 
 void Game::settingThePlayerGender(Player* player) {
 
-	//This is aesthetic only.
 	const struct Gender {
 		const std::string INPUT_MALE = "1";
 		const std::string INPUT_FEMALE = "2";
@@ -129,16 +128,13 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 }
 
 int Game::run() {
-
-	loadGame();
-
-	//Create pointers.
+	//If any new pointer is made, declare them here.
 	Player* player = new Player();
 	Pronouns* pronouns = new Pronouns();
 
 	setup(player, pronouns);
 
-	//Delete and Nullify pointers to PREVENT MEMORY LEAK!!!!
+	//Delete and Nullify pointers.
 	delete player;
 	player = nullptr;
 
