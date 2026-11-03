@@ -12,9 +12,12 @@
 class SceneManager
 {
 private:
-	const bool isFirstScene = false; //If this is in fact the first scene, change to "true".
-	
+	const bool IS_FIRST_SCENE = false; //If this is in fact the first scene, change to "true".
+	const int SCENE_ID = 1; //Change the ID for each scene sequentially. If this is the first scene, change it to "0".
 public:
+	//Declare any information that must be saved here. And in "SceneTemplate.cpp"
+	struct SaveData{int sceneid; int playerlife; std::string playername; int playergender; int playerclass;};
+
 
 	void getSaveData(); //Scan the system for previous saves before loading new scene.
 	void playScene(Player* player, Pronouns* pronouns); //Load a new scene

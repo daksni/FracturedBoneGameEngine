@@ -18,7 +18,7 @@ public:
 
 	void delay(int delayTime);
 
-	void loadGame();
+	int loadGame();
 
 	void settingHowThePlayerShouldBeCalled(Player* player);
 	void settingThePlayerGender(Player* player);

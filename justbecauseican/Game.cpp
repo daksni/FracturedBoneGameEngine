@@ -12,8 +12,17 @@ void Game::delay(int delayTime) {
 }
 
 //============================ CHECK FOR SAVE FILE =======================================//
-void Game::loadGame(){
-	//TODO: read for save files before setup.
+
+int Game::loadGame(){
+	SceneManager::SaveData saveData;
+	std::ifstream saveFile("data.fbgesvdt");
+	if (saveFile.is_open()) {
+		saveFile >> saveData.sceneid;
+		return 1;
+	}
+	else {
+		return 0;
+	}
 }
 
 

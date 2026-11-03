@@ -8,35 +8,45 @@
 
 #include "SceneTemplate.h"
 
+//Declare any information that must be saved here. And in "SceneTemplate.h"
+struct SceneManager::SaveData {
+	int sceneid;
+	int playerlife;
+	std::string playername;
+	int playergender;
+	int playerclass;
+};
+
+
 //If you want to make this the first scene, and generate a save file,
-//Change "isFirstScene" to "true" in "SceneTemplate.h" otherwise, this
+//Change "IS_FIRST_SCENE" to "true" in "SceneTemplate.h" otherwise, this
 //function will always attempt to load a previous save that may be nonexistent.
 void SceneManager::getSaveData() {
-	if (isFirstScene == true) {
-		//TODO: make new save file
+	if (IS_FIRST_SCENE == true) {
+		std::ofstream saveFile("data.fbgesvdt");
 	}
-	else if (isFirstScene == false) {
-		//TODO: read save data
+	else if (IS_FIRST_SCENE == false) {
+		std::ifstream saveFile("data.fbgesvdt");
+
+		if (saveFile.is_open()) {
+
+		}
 	}
 }
 
 void SceneManager::playScene(Player* player, Pronouns* pronouns) {
-	//Add code here to define what happens in the game!
+	getSaveData();
+	
+	//Add here the fucntions of the scene!
+
+	genNewSave(player);
 }
 
-void SceneManager::genNewSave(Player* player) {
-
-	//Add any relevant information here.
-	struct SaveData{
-		int playerlife;
-		std::string playername;
-		int playergender;
-		int playerclass;
-	};
-
-	SaveData saveData;
+void SceneManager::genNewSave(Player* player) {	
+	SceneManager::SaveData saveData;
 	
 	//Set the value of the saved information.
+	saveData.sceneid = SCENE_ID;
 	saveData.playerlife = player->getPlayerLife();
 	saveData.playerclass = player->getPlayerClass();
 	saveData.playername = player->getPlayerName();
