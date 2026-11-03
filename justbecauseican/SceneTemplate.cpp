@@ -9,13 +9,35 @@
 #include "SceneTemplate.h"
 
 void SceneManager::getSaveData() {
-	//TODO: Add file read logic.
+	if (isFirstScene == true) {
+		//TODO: make new save file
+	}
+	else if (isFirstScene == false) {
+		//TODO: read save data
+	}
 }
 
 void SceneManager::playScene(Player* player, Pronouns* pronouns) {
-
+	//Add code here to define what happens in the game!
 }
 
-int SceneManager::genNewSave() {
-	return 0;
+void SceneManager::genNewSave(Player* player) {
+
+	//Add any relevant information here.
+	struct SaveData{
+		int playerlife;
+		std::string playername;
+		int playergender;
+		int playerclass;
+	};
+
+	SaveData saveData;
+	
+	//Set the value of the saved information.
+	saveData.playerlife = player->getPlayerLife();
+	saveData.playerlife = player->getPlayerLife();
+	saveData.playername = player->getPlayerName();
+	saveData.playergender = player->getPlayerGender();
+
+	//TODO: save file logic.
 }

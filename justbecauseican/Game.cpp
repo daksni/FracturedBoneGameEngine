@@ -3,6 +3,7 @@
 //The usage of this code freely is allowed as long as the author is credited.
 
 #include "Game.h"
+#include "SceneTemplate.h" // <-- Every new scene must be added here, instead of the template.
 
 //================================= AUXILIARY FUNCTIONS ===================================//
 

@@ -7,17 +7,18 @@
 //MAKE A NEW COPY FOR EACH SCENE.
 
 #pragma once
-
+#include <fstream>
 #include "Game.h"
 
 class SceneManager
 {
 private:
-	struct saveData{};
+	const bool isFirstScene = false; //If this is in fact the first scene, change to "true".
+	
 public:
 
 	void getSaveData(); //Scan the system for previous saves before loading new scene.
 	void playScene(Player* player, Pronouns* pronouns); //Load a new scene
-	int genNewSave(); //Save any relevant information.
+	void genNewSave(Player* player); //Save any relevant information.
 };
 
