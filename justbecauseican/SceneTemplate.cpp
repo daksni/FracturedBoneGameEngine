@@ -35,7 +35,7 @@ void SceneManager::genNewSave(Player* player) {
 	
 	//Set the value of the saved information.
 	saveData.playerlife = player->getPlayerLife();
-	saveData.playerlife = player->getPlayerLife();
+	saveData.playerclass = player->getPlayerClass();
 	saveData.playername = player->getPlayerName();
 	saveData.playergender = player->getPlayerGender();
 
