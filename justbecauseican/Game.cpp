@@ -3,7 +3,8 @@
 //The usage of this code freely is allowed as long as the author is credited.
 
 #include "Game.h"
-#include "SceneTemplate.h" // <-- Every new scene must be added here, instead of the template.
+#include "FirstScene.h"
+#include "Scene1.h"
 
 //================================= AUXILIARY FUNCTIONS ===================================//
 
@@ -138,22 +139,29 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 }
 
 void Game::run(Player* player, Pronouns* pronouns) {
+	//Fetch the scene ID of a previous save if there is one:
+	int sceneID = loadGame();
+
 	//Create an instance of every scene here:
-	SceneTemplate sceneTemplate;
+	FirstScene firstScene;
+	Scene1 scene1;
 
 	//Checks if there's a previous save and load based on the sceneID.
-	if (loadGame() == 0) {
+	if (sceneID == 0) {
 		setup(player, pronouns);
-		sceneTemplate.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
+		firstScene.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
 	}
-	else if (loadGame() != 0) { //Check the scene IDs to load proper scene. Add "else if"s for the other scenes.
-		if (loadGame() == sceneTemplate.getSceneID()) {
-			sceneTemplate.playScene(player, pronouns);
+	else if (sceneID != 0) { //Check the scene IDs to load proper scene. Add "else if"s for the other scenes.
+		if (sceneID == firstScene.getSceneID()) {
+			firstScene.playScene(player, pronouns);
+		}
+		else if (sceneID == scene1.getSceneID()) {
+			scene1.playScene(player, pronouns);
 		}
 		else {
 			//In case the sceneID doesn't match any scenes, load the setup.
 			setup(player, pronouns);
-			sceneTemplate.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
+			firstScene.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
 		}
 	}
 

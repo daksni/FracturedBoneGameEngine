@@ -9,7 +9,7 @@
 #include "SceneTemplate.h"
 
 
-void SceneTemplate::getSaveData(Player* player) {
+bool SceneTemplate::getSaveData(Player* player) {
 	SceneTemplate::SaveData saveData;
 
 	std::ifstream saveFile("data.fbgesvdt");
@@ -23,30 +23,41 @@ void SceneTemplate::getSaveData(Player* player) {
 		saveFile >> saveData.playergender;
 
 		//Apply necessary changes.
-		player->setPlayerLife(saveData.playerlife);
-		player->setPlayerClass(saveData.playerclass);
-		player->setPlayerName(saveData.playername);
-		player->setPlayerGender(saveData.playergender);
-
+		if (saveData.sceneid == SCENE_ID) {
+			player->setPlayerLife(saveData.playerlife);
+			player->setPlayerClass(saveData.playerclass);
+			player->setPlayerName(saveData.playername);
+			player->setPlayerGender(saveData.playergender);
+			return true;
+		}
+		else {
+			return false;
+		}
+		return false;
 	}
 }
 
 void SceneTemplate::playScene(Player* player, Pronouns* pronouns) {
-	getSaveData(player);
+	if (getSaveData(player) == false) {
+		//do something
+	}
+	else {
 
-	//Add here the fucntions of the scene!
-	std::cout << "\n\n\nYou have loaded the empty template scene! :D\nDown below we will dump the player attributes:";
-	player->vomitAllAttr();
-	std::cout << "\nIf you run the game again, this will be what you will see! In the future, add more scenes :D\n\n\n";
+		//Add here the fucntions of the scene!
+		std::cout << "\n\n\nYou have loaded the empty template scene! :D\nDown below we will dump the player attributes:";
+		player->vomitAllAttr();
+		std::cout << "\nIf you run the game again, this will be what you will see! In the future, add more scenes :D\n\n\n";
 
-	genNewSave(player);
+		genNewSave(player);
+
+	}
 }
 
 void SceneTemplate::genNewSave(Player* player) {
 	SceneTemplate::SaveData saveData;
 
 	//Set the value of the saved information.
-	saveData.sceneid = SCENE_ID;
+	saveData.sceneid = SCENE_ID + 1;
 	saveData.playerlife = player->getPlayerLife();
 	saveData.playerclass = player->getPlayerClass();
 	saveData.playername = player->getPlayerName();
