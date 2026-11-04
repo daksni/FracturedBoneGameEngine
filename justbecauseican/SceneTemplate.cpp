@@ -9,7 +9,7 @@
 #include "SceneTemplate.h"
 
 
-void SceneTemplate::getSaveData(Player* &player) {
+void SceneTemplate::getSaveData(Player* player) {
 	SceneTemplate::SaveData saveData;
 
 	std::ifstream saveFile("data.fbgesvdt");
@@ -25,15 +25,15 @@ void SceneTemplate::getSaveData(Player* &player) {
 		//Apply necessary changes.
 		player->setPlayerLife(saveData.playerlife);
 		player->setPlayerClass(saveData.playerclass);
-		player->setPlayerName(saveData.playername);			
+		player->setPlayerName(saveData.playername);
 		player->setPlayerGender(saveData.playergender);
-		
+
 	}
 }
 
 void SceneTemplate::playScene(Player* player, Pronouns* pronouns) {
 	getSaveData(player);
-	
+
 	//Add here the fucntions of the scene!
 	std::cout << "\n\n\nYou have loaded the empty template scene! :D\nDown below we will dump the player attributes:";
 	player->vomitAllAttr();
@@ -42,9 +42,9 @@ void SceneTemplate::playScene(Player* player, Pronouns* pronouns) {
 	genNewSave(player);
 }
 
-void SceneTemplate::genNewSave(Player* &player) {
+void SceneTemplate::genNewSave(Player* player) {
 	SceneTemplate::SaveData saveData;
-	
+
 	//Set the value of the saved information.
 	saveData.sceneid = SCENE_ID;
 	saveData.playerlife = player->getPlayerLife();
@@ -61,6 +61,6 @@ void SceneTemplate::genNewSave(Player* &player) {
 	saveFile << saveData.playergender << "\n";
 }
 
-int SceneTemplate::getSceneID()  {
+int SceneTemplate::getSceneID() {
 	return SCENE_ID;
 }

@@ -13,7 +13,7 @@ void Game::delay(int delayTime) {
 
 //============================ CHECK FOR SAVE FILE =======================================//
 
-int Game::loadGame(){
+int Game::loadGame() {
 	SceneTemplate::SaveData saveData;
 	std::ifstream saveFile("data.fbgesvdt");
 	if (saveFile.is_open()) {
@@ -137,11 +137,7 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 	settingThePlayerClass(player, pronouns);
 }
 
-int Game::run() {
-	//If any new pointer is made, declare them here.
-	Player* player = new Player();
-	Pronouns* pronouns = new Pronouns();
-
+void Game::run(Player* player, Pronouns* pronouns) {
 	//Create an instance of every scene here:
 	SceneTemplate sceneTemplate;
 
@@ -160,15 +156,5 @@ int Game::run() {
 			sceneTemplate.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
 		}
 	}
-
-	//Delete and Nullify pointers.
-	delete player;
-	player = nullptr;
-
-	delete pronouns;
-	pronouns = nullptr;
-
-	//Return 0 for the main func.
-	return 0;
 
 }

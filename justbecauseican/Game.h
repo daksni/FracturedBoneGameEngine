@@ -26,7 +26,7 @@ public:
 
 	void setup(Player* player, Pronouns* pronouns);
 
-	int run();
+	void run(Player* player, Pronouns* pronouns);
 
 };
 

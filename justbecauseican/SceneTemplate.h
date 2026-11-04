@@ -14,7 +14,7 @@ class SceneTemplate //Every new scene using this template MUST CHANGE THE NAME O
 					//An useful example is this: "Scene1.h", "Scene1.cpp" and "class Scene1".
 {
 private:
-	const int SCENE_ID = 1; //Change the ID for each scene sequentially. If this is the first scene, change it to "0".
+	const int SCENE_ID = 1; //Change the ID for each scene sequentially.
 public:
 
 	//Declare any information that must be saved here.
@@ -26,9 +26,9 @@ public:
 	int playerclass;};
 
 
-	void getSaveData(Player* &player); //Scan the system for previous saves before loading new scene.
+	void getSaveData(Player* player); //Scan the system for previous saves before loading new scene.
 	void playScene(Player* player, Pronouns* pronouns); //Load a new scene
-	void genNewSave(Player* &player); //Save any relevant information.
+	void genNewSave(Player* player); //Save any relevant information.
 
 	int getSceneID();
 };

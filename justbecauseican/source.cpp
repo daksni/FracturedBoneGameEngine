@@ -5,6 +5,20 @@
 #include "Game.h"
 
 int main() {
+	//If any new pointer is made, declare them here.
+	Player* player = new Player();
+	Pronouns* pronouns = new Pronouns();
+
 	Game game;
-	game.run();	
+	game.run(player, pronouns);
+
+	//Delete and Nullify pointers.
+
+	delete player;
+	player = nullptr;
+
+	delete pronouns;
+	pronouns = nullptr;
+
+	return 0;
 }
