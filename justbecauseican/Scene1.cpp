@@ -2,6 +2,10 @@
 //Developed by Lead Engine Programmer: Daniel M. S. A.
 //The usage of this code freely is allowed as long as the author is credited.
 
+//This is a scene implementation example. Copy this for any new scene, or the SceneTemplate files.
+//It is imperatve that any new save data made, be stored in all new scene headers.
+//Ideally, you will copy every new scene, and only change what is saved and what is pulled. As well as what happens in the scene.
+
 #include "Scene1.h"
 
 
@@ -35,15 +39,13 @@ bool Scene1::getSaveData(Player* player) {
 
 void Scene1::playScene(Player* player, Pronouns* pronouns) {
 	if (getSaveData(player) == false) {
-		//do something
+		return;
 	}
 	else {
 
 		//Add here the fucntions of the scene!
-		std::cout << "\n\n\nYou have loaded the empty template scene! :D\nDown below we will dump the player attributes:";
-		player->vomitAllAttr();
-		std::cout << "\nIf you run the game again, this will be what you will see! In the future, add more scenes :D\n\n\n";
 
+		//Usually you will want to generate a save after a condition is met.
 		genNewSave(player);
 
 	}

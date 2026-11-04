@@ -44,10 +44,8 @@ void SceneTemplate::playScene(Player* player, Pronouns* pronouns) {
 	else {
 
 		//Add here the fucntions of the scene!
-		std::cout << "\n\n\nYou have loaded the empty template scene! :D\nDown below we will dump the player attributes:";
-		player->vomitAllAttr();
-		std::cout << "\nIf you run the game again, this will be what you will see! In the future, add more scenes :D\n\n\n";
-
+		//Usually you will want to generate a save only after a condition within the scene playthrough is met.
+		//But having it seperate at the end of the exection should work.
 		genNewSave(player);
 
 	}

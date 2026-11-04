@@ -15,11 +15,11 @@ void Game::delay(int delayTime) {
 //============================ CHECK FOR SAVE FILE =======================================//
 
 int Game::loadGame() {
-	SceneTemplate::SaveData saveData;
+	int fetchID;
 	std::ifstream saveFile("data.fbgesvdt");
 	if (saveFile.is_open()) {
-		saveFile >> saveData.sceneid;
-		return saveData.sceneid;
+		saveFile >> fetchID;
+		return fetchID;
 	}
 	else {
 		return 0;

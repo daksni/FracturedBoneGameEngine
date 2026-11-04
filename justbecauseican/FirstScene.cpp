@@ -7,10 +7,20 @@
 #include "FirstScene.h"
 
 void FirstScene::playScene(Player* player, Pronouns* pronouns) {
+	std::string choice;
+	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+	delay(3);
+	std::cout << "Welcome to this empty scene! Press [1] to go to the next scene.\n";
+	std::getline(std::cin, choice);
+	while (choice.empty() || choice != "1") {
+		std::cout << "\nInvalie input. Press [1] to go to the next scene.\n";
+		std::getline(std::cin, choice);
+		break;
+	}
 
-		//Add here the fucntions of the scene!
-
+	if (choice == "1") {
 		genNewSave(player);
+	}
 
 	}
 }
