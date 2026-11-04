@@ -35,6 +35,9 @@ void SceneTemplate::playScene(Player* player, Pronouns* pronouns) {
 	getSaveData(player);
 	
 	//Add here the fucntions of the scene!
+	std::cout << "\n\n\nYou have loaded the empty template scene! :D\nDown below we will dump the player attributes:";
+	player->vomitAllAttr();
+	std::cout << "\nIf you run the game again, this will be what you will see! In the future, add more scenes :D\n\n\n";
 
 	genNewSave(player);
 }
