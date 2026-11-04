@@ -9,18 +9,27 @@
 #pragma once
 #include "Game.h"
 
-class SceneManager
+class SceneTemplate //Every new scene using this template MUST CHANGE THE NAME OF THIS CLASS!
+					//otherwise the code will confilct with other instances of "SceneTemplate."
+					//An useful example is this: "Scene1.h", "Scene1.cpp" and "class Scene1".
 {
 private:
-	const bool IS_FIRST_SCENE = false; //If this is in fact the first scene, change to "true".
 	const int SCENE_ID = 1; //Change the ID for each scene sequentially. If this is the first scene, change it to "0".
 public:
-	//Declare any information that must be saved here. And in "SceneTemplate.cpp"
-	struct SaveData{int sceneid; int playerlife; std::string playername; int playergender; int playerclass;};
+
+	//Declare any information that must be saved here.
+	struct SaveData{
+	int sceneid;
+	int playerlife;
+	std::string playername;
+	int playergender;
+	int playerclass;};
 
 
-	void getSaveData(); //Scan the system for previous saves before loading new scene.
+	void getSaveData(Player* &player); //Scan the system for previous saves before loading new scene.
 	void playScene(Player* player, Pronouns* pronouns); //Load a new scene
-	void genNewSave(Player* player); //Save any relevant information.
+	void genNewSave(Player* &player); //Save any relevant information.
+
+	int getSceneID();
 };
 

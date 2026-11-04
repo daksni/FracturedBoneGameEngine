@@ -14,16 +14,17 @@ void Game::delay(int delayTime) {
 //============================ CHECK FOR SAVE FILE =======================================//
 
 int Game::loadGame(){
-	SceneManager::SaveData saveData;
+	SceneTemplate::SaveData saveData;
 	std::ifstream saveFile("data.fbgesvdt");
 	if (saveFile.is_open()) {
 		saveFile >> saveData.sceneid;
-		return 1;
+		return saveData.sceneid;
 	}
 	else {
 		return 0;
 	}
 }
+
 
 
 //============================== GAME SETUP FUNCTIONS ====================================//
@@ -141,7 +142,24 @@ int Game::run() {
 	Player* player = new Player();
 	Pronouns* pronouns = new Pronouns();
 
-	setup(player, pronouns);
+	//Create an instance of every scene here:
+	SceneTemplate sceneTemplate;
+
+	//Checks if there's a previous save and load based on the sceneID.
+	if (loadGame() == 0) {
+		setup(player, pronouns);
+		sceneTemplate.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
+	}
+	else if (loadGame() != 0) { //Check the scene IDs to load proper scene. Add "else if"s for the other scenes.
+		if (loadGame() == sceneTemplate.getSceneID()) {
+			sceneTemplate.playScene(player, pronouns);
+		}
+		else {
+			//In case the sceneID doesn't match any scenes, load the setup.
+			setup(player, pronouns);
+			sceneTemplate.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
+		}
+	}
 
 	//Delete and Nullify pointers.
 	delete player;

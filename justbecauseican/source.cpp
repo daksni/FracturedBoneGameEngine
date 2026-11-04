@@ -6,11 +6,5 @@
 
 int main() {
 	Game game;
-	if (game.loadGame() == 0) {
-		game.run();
-	}
-	else {
-		std::cout << "It appears we have a save file!"; //do things later
-	}
-	
+	game.run();	
 }
