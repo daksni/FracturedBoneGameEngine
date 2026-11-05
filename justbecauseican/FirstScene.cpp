@@ -7,7 +7,7 @@
 #include "Game.h"
 #include "FirstScene.h"
 
-void FirstScene::playScene(Player* player, Pronouns* pronouns, Game* game) {
+void FirstScene::playScene(Game* game, Player* player, Pronouns* pronouns) {
 	std::string choice;
 	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 	//delay(3);

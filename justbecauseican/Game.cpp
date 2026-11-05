@@ -136,26 +136,26 @@ void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
 
 //========================================= GAME CORE =====================================//
 
-void Game::setup(Player* player, Pronouns* pronouns) {
+void Game::setup(Game* game, Player* player, Pronouns* pronouns) {
 	std::cout << "Hello, welcome to this prototype!\n";
 	settingHowThePlayerShouldBeCalled(player);
 	settingThePlayerGender(player);
 	settingThePlayerClass(player, pronouns);
-	firstScene.playScene(player, pronouns); //After setup is complete, run the first scene!
+	firstScene.playScene(game, player, pronouns); //After setup is complete, run the first scene!
 }
 
 //Schedules All scenes. ADD EVERY SCENE HERE IN ORDER!
-void Game::sceneScheduler(Player* player, Pronouns* pronouns, Game* game) {
+void Game::sceneScheduler(Game* game, Player* player, Pronouns* pronouns) {
 	while (keepGameRunning == true) {
-		setup(player, pronouns);
-		scene1.playScene(player, pronouns);
+		setup(game, player, pronouns);
+		scene1.playScene(game, player, pronouns);
 		break;
 	}
 }
 
 
 //Checks if there's a previous save and load based on the sceneID.
-void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns, Game* game) {
+void Game::loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns) {
 	//Fetch the scene ID of a previous save if there is one:
 	int sceneID = loadGame();
 
@@ -163,20 +163,20 @@ void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns, Game* game)
 	//ALL SCENES MUST BE HERE FOR A PROPER LOAD. Add "else if"s for new IDs.
 	if (sceneID != 0) { 
 		if (sceneID == scene1.getSceneID()) {
-			scene1.playScene(player, pronouns, game);
+			scene1.playScene(game, player, pronouns);
 		}
 		else {
 			//If none of the possible IDs match a scene, reload the setup.
-			sceneScheduler(player, pronouns, game);
+			sceneScheduler(game, player, pronouns);
 		}
 
 	}
 	else { //If there is no previous save, load the setup.
-		sceneScheduler(player, pronouns, game);
+		sceneScheduler(game, player, pronouns);
 	}
 }
 
-void Game::run(Player* player, Pronouns* pronouns, Game* game) {
-	loadSceneFromSaveGame(player, pronouns, game);
+void Game::run(Game* game, Player* player, Pronouns* pronouns) {
+	loadSceneFromSaveGame(game, player, pronouns);
 }
 

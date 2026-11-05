@@ -6,13 +6,16 @@
 
 int main() {
 	//If any new pointer is made, declare them here.
+	Game* game = new Game();
 	Player* player = new Player();
 	Pronouns* pronouns = new Pronouns();
-	Game* game = new Game();
 
-	game->run(player, pronouns, game);
+	//Run the game.
+	game->run(game, player, pronouns);
 
 	//Delete and Nullify pointers.
+	delete game;
+	game = nullptr;
 
 	delete player;
 	player = nullptr;
@@ -20,8 +23,6 @@ int main() {
 	delete pronouns;
 	pronouns = nullptr;
 
-	delete game;
-	game = nullptr;
-
+	//End the application.
 	return 0;
 }

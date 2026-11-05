@@ -37,7 +37,7 @@ bool Scene1::getSaveData(Player* player) {
 	}
 }
 
-void Scene1::playScene(Player* player, Pronouns* pronouns, Game* game) {
+void Scene1::playScene(Game* game, Player* player, Pronouns* pronouns) {
 	if (getSaveData(player) == false) {
 		return;
 	}

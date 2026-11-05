@@ -32,7 +32,7 @@ public:
 
 
 	bool getSaveData(Player* player); //Scan the system for previous saves before loading new scene.
-	void playScene(Player* player, Pronouns* pronouns); //Load a new scene
+	void playScene(Game* game, Player* player, Pronouns* pronouns); //Load a new scene
 	void genNewSave(Player* player); //Save any relevant information.
 
 	int const getSceneID();

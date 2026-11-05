@@ -25,11 +25,11 @@ public:
 	void settingThePlayerGender(Player* player);
 	void settingThePlayerClass(Player* player, Pronouns* pronouns);
 
-	void setup(Player* player, Pronouns* pronouns);
-	void sceneScheduler(Player* player, Pronouns* pronouns, Game* game);
-	void loadSceneFromSaveGame(Player* player, Pronouns* pronouns, Game* game);
+	void setup(Game* game, Player* player, Pronouns* pronouns);
+	void sceneScheduler(Game* game, Player* player, Pronouns* pronouns);
+	void loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns);
 
-	void run(Player* player, Pronouns* pronouns, Game* game);
+	void run(Game* game, Player* player, Pronouns* pronouns);
 	
 
 };
