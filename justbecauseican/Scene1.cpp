@@ -49,7 +49,7 @@ void Scene1::playScene(Game* game, Player* player, Pronouns* pronouns) {
 		//Usually you will want to generate a save after a condition is met.
 		genNewSave(player);
 
-		game->delay(5);
+		game->delay(2);
 		game->keepGameRunning = false;
 		
 
