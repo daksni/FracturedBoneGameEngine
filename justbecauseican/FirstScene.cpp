@@ -10,7 +10,7 @@
 void FirstScene::playScene(Game* game, Player* player, Pronouns* pronouns) {
 	std::string choice;
 	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-	//delay(3);
+	game->delay(3);
 	std::cout << "Welcome to this empty scene!\nPress [1] to go to the next scene. \tPress [2] to quit the game.\n";
 	std::getline(std::cin, choice);
 	while (choice.empty() || choice != "1" && choice != "2") {
