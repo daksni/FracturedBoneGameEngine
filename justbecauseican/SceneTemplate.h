@@ -35,6 +35,6 @@ public:
 	void playScene(Player* player, Pronouns* pronouns); //Load a new scene
 	void genNewSave(Player* player); //Save any relevant information.
 
-	int getSceneID();
+	int const getSceneID();
 };
 

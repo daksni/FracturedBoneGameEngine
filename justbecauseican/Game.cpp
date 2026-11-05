@@ -3,6 +3,8 @@
 //The usage of this code freely is allowed as long as the author is credited.
 
 #include "Game.h"
+
+//Import every scene here:
 #include "FirstScene.h"
 #include "Scene1.h"
 
@@ -143,7 +145,7 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 }
 
 //Schedules All scenes. ADD EVERY SCENE HERE IN ORDER!
-void Game::sceneScheduler(Player* player, Pronouns* pronouns) {
+void Game::sceneScheduler(Player* player, Pronouns* pronouns, Game* game) {
 	while (keepGameRunning == true) {
 		setup(player, pronouns);
 		scene1.playScene(player, pronouns);
@@ -153,7 +155,7 @@ void Game::sceneScheduler(Player* player, Pronouns* pronouns) {
 
 
 //Checks if there's a previous save and load based on the sceneID.
-void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns) {
+void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns, Game* game) {
 	//Fetch the scene ID of a previous save if there is one:
 	int sceneID = loadGame();
 
@@ -165,16 +167,16 @@ void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns) {
 		}
 		else {
 			//If none of the possible IDs match a scene, reload the setup.
-			sceneScheduler(player, pronouns);
+			sceneScheduler(player, pronouns, game);
 		}
 
 	}
 	else { //If there is no previous save, load the setup.
-		sceneScheduler(player, pronouns);
+		sceneScheduler(player, pronouns, game);
 	}
 }
 
-void Game::run(Player* player, Pronouns* pronouns) {
-	loadSceneFromSaveGame(player, pronouns);
+void Game::run(Player* player, Pronouns* pronouns, Game* game) {
+	loadSceneFromSaveGame(player, pronouns, game);
 }
 

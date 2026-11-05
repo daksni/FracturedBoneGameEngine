@@ -37,21 +37,20 @@ bool Scene1::getSaveData(Player* player) {
 	}
 }
 
-void Scene1::playScene(Player* player, Pronouns* pronouns) {
+void Scene1::playScene(Player* player, Pronouns* pronouns, Game* game) {
 	if (getSaveData(player) == false) {
 		return;
 	}
 	else {
 
 		//Add here the fucntions of the scene! Here a simple example where the game shuts off.
-		Game game;
 		std::cout << "NOTHING HERE AS WELL! THE GAME WILL CLOSE SOON!";
 
 		//Usually you will want to generate a save after a condition is met.
 		genNewSave(player);
 
-		game.delay(5);
-		game.keepGameRunning = false;
+		game->delay(5);
+		game->keepGameRunning = false;
 		
 
 	}
@@ -76,6 +75,6 @@ void Scene1::genNewSave(Player* player) {
 	saveFile << saveData.playergender << "\n";
 }
 
-int Scene1::getSceneID() {
+int const Scene1::getSceneID() {
 	return SCENE_ID;
 }

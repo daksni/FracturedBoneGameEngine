@@ -75,6 +75,6 @@ void SceneTemplate::genNewSave(Player* player) {
 	saveFile << saveData.playergender << "\n";
 }
 
-int SceneTemplate::getSceneID() {
+int const SceneTemplate::getSceneID() {
 	return SCENE_ID;
 }

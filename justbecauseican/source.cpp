@@ -8,9 +8,9 @@ int main() {
 	//If any new pointer is made, declare them here.
 	Player* player = new Player();
 	Pronouns* pronouns = new Pronouns();
+	Game* game = new Game();
 
-	Game game;
-	game.run(player, pronouns);
+	game->run(player, pronouns, game);
 
 	//Delete and Nullify pointers.
 
@@ -19,6 +19,9 @@ int main() {
 
 	delete pronouns;
 	pronouns = nullptr;
+
+	delete game;
+	game = nullptr;
 
 	return 0;
 }

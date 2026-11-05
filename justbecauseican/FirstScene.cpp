@@ -7,7 +7,7 @@
 #include "Game.h"
 #include "FirstScene.h"
 
-void FirstScene::playScene(Player* player, Pronouns* pronouns) {
+void FirstScene::playScene(Player* player, Pronouns* pronouns, Game* game) {
 	std::string choice;
 	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 	//delay(3);
@@ -16,15 +16,13 @@ void FirstScene::playScene(Player* player, Pronouns* pronouns) {
 	while (choice.empty() || choice != "1" && choice != "2") {
 		std::cout << "\nInvalie input. Press [1] to go to the next scene.\n";
 		std::getline(std::cin, choice);
-		break;
 	}
 
 	if (choice == "1") {
 		genNewSave(player);
 	}
 	else if (choice == "2") {
-		Game game;
-		game.keepGameRunning = false;
+		game->keepGameRunning = false;
 	}
 
 }
@@ -49,6 +47,6 @@ void FirstScene::genNewSave(Player* player) {
 	saveFile << saveData.playergender << "\n";
 }
 
-int FirstScene::getSceneID() {
+int const FirstScene::getSceneID() {
 	return SCENE_ID;
 }
