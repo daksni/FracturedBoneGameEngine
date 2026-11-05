@@ -163,7 +163,7 @@ void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns, Game* game)
 	//ALL SCENES MUST BE HERE FOR A PROPER LOAD. Add "else if"s for new IDs.
 	if (sceneID != 0) { 
 		if (sceneID == scene1.getSceneID()) {
-			scene1.playScene(player, pronouns);
+			scene1.playScene(player, pronouns, game);
 		}
 		else {
 			//If none of the possible IDs match a scene, reload the setup.

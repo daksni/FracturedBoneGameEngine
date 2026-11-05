@@ -14,7 +14,7 @@ void FirstScene::playScene(Player* player, Pronouns* pronouns, Game* game) {
 	std::cout << "Welcome to this empty scene!\nPress [1] to go to the next scene. \tPress [2] to quit the game.\n";
 	std::getline(std::cin, choice);
 	while (choice.empty() || choice != "1" && choice != "2") {
-		std::cout << "\nInvalie input. Press [1] to go to the next scene.\n";
+		std::cout << "\nInvalid input. Press [1] to go to the next scene.\n";
 		std::getline(std::cin, choice);
 	}
 
