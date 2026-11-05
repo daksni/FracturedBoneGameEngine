@@ -6,6 +6,11 @@
 #include "FirstScene.h"
 #include "Scene1.h"
 
+//================================ SCENE DECLARATIONS =================================//
+//Create an instance of every scene here:
+FirstScene firstScene;
+Scene1 scene1;
+
 //================================= AUXILIARY FUNCTIONS ===================================//
 
 void Game::delay(int delayTime) {
@@ -25,8 +30,6 @@ int Game::loadGame() {
 		return 0;
 	}
 }
-
-
 
 //============================== GAME SETUP FUNCTIONS ====================================//
 
@@ -136,33 +139,42 @@ void Game::setup(Player* player, Pronouns* pronouns) {
 	settingHowThePlayerShouldBeCalled(player);
 	settingThePlayerGender(player);
 	settingThePlayerClass(player, pronouns);
+	firstScene.playScene(player, pronouns); //After setup is complete, run the first scene!
 }
 
-void Game::run(Player* player, Pronouns* pronouns) {
+//Schedules All scenes. ADD EVERY SCENE HERE IN ORDER!
+void Game::sceneScheduler(Player* player, Pronouns* pronouns) {
+	while (keepGameRunning == true) {
+		setup(player, pronouns);
+		scene1.playScene(player, pronouns);
+		break;
+	}
+}
+
+
+//Checks if there's a previous save and load based on the sceneID.
+void Game::loadSceneFromSaveGame(Player* player, Pronouns* pronouns) {
 	//Fetch the scene ID of a previous save if there is one:
 	int sceneID = loadGame();
 
-	//Create an instance of every scene here:
-	FirstScene firstScene;
-	Scene1 scene1;
-
-	//Checks if there's a previous save and load based on the sceneID.
-	if (sceneID == 0) {
-		setup(player, pronouns);
-		firstScene.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
-	}
-	else if (sceneID != 0) { //Check the scene IDs to load proper scene. Add "else if"s for the other scenes.
-		if (sceneID == firstScene.getSceneID()) {
-			firstScene.playScene(player, pronouns);
-		}
-		else if (sceneID == scene1.getSceneID()) {
+	//Check the scene IDs to load proper scene.
+	//ALL SCENES MUST BE HERE FOR A PROPER LOAD. Add "else if"s for new IDs.
+	if (sceneID != 0) { 
+		if (sceneID == scene1.getSceneID()) {
 			scene1.playScene(player, pronouns);
 		}
 		else {
-			//In case the sceneID doesn't match any scenes, load the setup.
-			setup(player, pronouns);
-			firstScene.playScene(player, pronouns); //ALWAYS LOAD THE FIRST SCENE!
+			//If none of the possible IDs match a scene, reload the setup.
+			sceneScheduler(player, pronouns);
 		}
-	}
 
+	}
+	else { //If there is no previous save, load the setup.
+		sceneScheduler(player, pronouns);
+	}
 }
+
+void Game::run(Player* player, Pronouns* pronouns) {
+	loadSceneFromSaveGame(player, pronouns);
+}
+

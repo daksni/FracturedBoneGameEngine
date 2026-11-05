@@ -12,16 +12,17 @@
 class FirstScene
 {
 private:
-	const int SCENE_ID = 1; 
+	const int SCENE_ID = 1;
 public:
 
 	//Declare any information that must be saved here.
-	struct SaveData{
-	int sceneid;
-	int playerlife;
-	std::string playername;
-	int playergender;
-	int playerclass;};
+	struct SaveData {
+		int sceneid;
+		int playerlife;
+		std::string playername;
+		int playergender;
+		int playerclass;
+	};
 
 	void playScene(Player* player, Pronouns* pronouns); //Load a new scene
 	void genNewSave(Player* player); //Save any relevant information.

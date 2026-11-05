@@ -4,15 +4,16 @@
 
 //This is the FirstScene, configure in here what is the first thing that happens in the game.
 
+#include "Game.h"
 #include "FirstScene.h"
 
 void FirstScene::playScene(Player* player, Pronouns* pronouns) {
 	std::string choice;
-	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-	delay(3);
-	std::cout << "Welcome to this empty scene! Press [1] to go to the next scene.\n";
+	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+	//delay(3);
+	std::cout << "Welcome to this empty scene!\nPress [1] to go to the next scene. \tPress [2] to quit the game.\n";
 	std::getline(std::cin, choice);
-	while (choice.empty() || choice != "1") {
+	while (choice.empty() || choice != "1" && choice != "2") {
 		std::cout << "\nInvalie input. Press [1] to go to the next scene.\n";
 		std::getline(std::cin, choice);
 		break;
@@ -21,9 +22,13 @@ void FirstScene::playScene(Player* player, Pronouns* pronouns) {
 	if (choice == "1") {
 		genNewSave(player);
 	}
-
+	else if (choice == "2") {
+		Game game;
+		game.keepGameRunning = false;
 	}
+
 }
+
 
 void FirstScene::genNewSave(Player* player) {
 	FirstScene::SaveData saveData;

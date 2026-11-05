@@ -43,10 +43,16 @@ void Scene1::playScene(Player* player, Pronouns* pronouns) {
 	}
 	else {
 
-		//Add here the fucntions of the scene!
+		//Add here the fucntions of the scene! Here a simple example where the game shuts off.
+		Game game;
+		std::cout << "NOTHING HERE AS WELL! THE GAME WILL CLOSE SOON!";
 
 		//Usually you will want to generate a save after a condition is met.
 		genNewSave(player);
+
+		game.delay(5);
+		game.keepGameRunning = false;
+		
 
 	}
 }
@@ -55,7 +61,7 @@ void Scene1::genNewSave(Player* player) {
 	Scene1::SaveData saveData;
 
 	//Set the value of the saved information.
-	saveData.sceneid = SCENE_ID + 1;
+	saveData.sceneid = SCENE_ID + 1; //The save will change this to an invalid ID, and the game will reset.
 	saveData.playerlife = player->getPlayerLife();
 	saveData.playerclass = player->getPlayerClass();
 	saveData.playername = player->getPlayerName();
@@ -70,6 +76,6 @@ void Scene1::genNewSave(Player* player) {
 	saveFile << saveData.playergender << "\n";
 }
 
-int SceneTemplate::getSceneID() {
+int Scene1::getSceneID() {
 	return SCENE_ID;
 }

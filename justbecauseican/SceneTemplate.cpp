@@ -6,6 +6,11 @@
 //FOR GAME DEVELOPMENT PURPOSES, **DO NOT** CHANGE THIS FILE!
 //MAKE A NEW COPY FOR EACH SCENE.
 
+//If you already have other scenes in your game, it is recommended that you copy them for use.
+//This engine already has a FirstScene and Scene1 as working examples to structure your game frome there.
+//However, if for whatever reason, you want the empty code without implementation...
+//this is the basic functionality of the scene code.
+
 #include "SceneTemplate.h"
 
 
@@ -39,7 +44,7 @@ bool SceneTemplate::getSaveData(Player* player) {
 
 void SceneTemplate::playScene(Player* player, Pronouns* pronouns) {
 	if (getSaveData(player) == false) {
-		//do something
+		return;
 	}
 	else {
 
