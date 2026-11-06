@@ -42,17 +42,20 @@ void Scene1::playScene(Game* game, Player* player, Pronouns* pronouns) {
 		return;
 	}
 	else {
+		while (game->keepGameRunning == true) {
 
-		//Add here the fucntions of the scene! Here a simple example where the game shuts off.
-		std::cout << "NOTHING HERE AS WELL! THE GAME WILL CLOSE SOON!";
+			//Add here the fucntions of the scene! Here a simple example where the game shuts off.
+			game->clearScreen();
+			game->writeText("ARIAL", 25, "NOTHING IN THE MOMENT. THE GAME WILL QUIT SHORTLY", 1, 1, { 255, 255, 255, 255 });
+			game->render();
 
-		//Usually you will want to generate a save after a condition is met.
-		genNewSave(player);
+			//Usually you will want to generate a save after a condition is met.
+			genNewSave(player);
 
-		game->delay(2);
-		game->keepGameRunning = false;
-		
+			game->delay(2);
+			game->stop();
 
+		}
 	}
 }
 

@@ -81,10 +81,10 @@ void Player::vomitAllAttr() {
 	std::string pClass;
 	std::string isDead;
 
-	if (Player::getPlayerGender() == 1) {
+	if (Player::getPlayerGender() == PlayerGender::MALE) {
 		gender = "Male";
 	}
-	else if (Player::getPlayerGender() == 2) {
+	else if (Player::getPlayerGender() == PlayerGender::FEMALE) {
 		gender = "Female";
 	}
 

@@ -30,6 +30,12 @@ public:
 		WRETCH = 5
 	};
 
+	//Enumeration of possible player genders.
+	const enum PlayerGender {
+		MALE = 1,
+		FEMALE = 2
+	};
+
 	//Getter arguments.
 	int getPlayerLife() const;
 	std::string getPlayerName() const;

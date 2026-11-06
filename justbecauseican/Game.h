@@ -8,6 +8,8 @@
 #include <thread>
 #include <string>
 #include <fstream>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "Player.h"
 #include "Pronouns.h"
@@ -15,6 +17,9 @@
 class Game
 {
 public:
+	SDL_Window* window = nullptr;
+	SDL_Renderer* renderer = nullptr;
+	TTF_Font* font = nullptr;
 
 	void delay(int delayTime);
 	bool keepGameRunning = true;
@@ -29,7 +34,14 @@ public:
 	void sceneScheduler(Game* game, Player* player, Pronouns* pronouns);
 	void loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns);
 
+	int writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color);
+	void render();
+
+	void clearScreen();
+	int makeWindow();
+
 	void run(Game* game, Player* player, Pronouns* pronouns);
+	void stop();
 	
 
 };

@@ -7,46 +7,64 @@
 #include "Game.h"
 #include "FirstScene.h"
 
+
 void FirstScene::playScene(Game* game, Player* player, Pronouns* pronouns) {
-	game->delay(5);
-	std::string choice;
-	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-	std::cout << "Welcome to this empty scene!\nPress [1] to go to the next scene. \tPress [2] to quit the game.\n";
-	std::getline(std::cin, choice);
-	while (choice.empty() || choice != "1" && choice != "2") {
-		std::cout << "\nInvalid input. Press [1] to go to the next scene.\n";
-		std::getline(std::cin, choice);
+	bool isSceneOver = false;
+	bool quitGame = false;
+
+	game->clearScreen();
+	game->writeText("ARIAL", 25, "Your character has been created!", 1, 1, { 255, 255, 255, 255 });
+	game->writeText("ARIAL", 25, "Press[1] to START. Press[2] to QUIT the game.", 1, 30, { 255, 255, 255, 255 });
+	game->render();
+
+	while (isSceneOver == false) {
+		SDL_Event event;
+
+		while (SDL_PollEvent(&event)) {
+			while (event.type == SDL_EVENT_KEY_DOWN) {
+				if (event.key.key == SDLK_1) {
+					isSceneOver = true;
+					break;
+				}
+				else if (event.key.key == SDLK_2) {
+					isSceneOver = true;
+					quitGame = true;
+					break;
+				}
+			}
+		}
 	}
 
-	if (choice == "1") {
+	if (isSceneOver == true && quitGame == false) {
 		genNewSave(player);
 	}
-	else if (choice == "2") {
-		game->keepGameRunning = false;
+	else if (quitGame == true) {
+		game->stop();
 	}
 
+
 }
 
+	void FirstScene::genNewSave(Player * player) {
+		FirstScene::SaveData saveData;
 
-void FirstScene::genNewSave(Player* player) {
-	FirstScene::SaveData saveData;
+		//Set the value of the saved information.
+		saveData.sceneid = SCENE_ID + 1;
+		saveData.playerlife = player->getPlayerLife();
+		saveData.playerclass = player->getPlayerClass();
+		saveData.playername = player->getPlayerName();
+		saveData.playergender = player->getPlayerGender();
 
-	//Set the value of the saved information.
-	saveData.sceneid = SCENE_ID + 1;
-	saveData.playerlife = player->getPlayerLife();
-	saveData.playerclass = player->getPlayerClass();
-	saveData.playername = player->getPlayerName();
-	saveData.playergender = player->getPlayerGender();
+		//Save values to the save file.
+		std::ofstream saveFile("data.fbgesvdt");
+		saveFile << saveData.sceneid << "\n";
+		saveFile << saveData.playerlife << "\n";
+		saveFile << saveData.playerclass << "\n";
+		saveFile << saveData.playername << "\n";
+		saveFile << saveData.playergender << "\n";
+	}
 
-	//Save values to the save file.
-	std::ofstream saveFile("data.fbgesvdt");
-	saveFile << saveData.sceneid << "\n";
-	saveFile << saveData.playerlife << "\n";
-	saveFile << saveData.playerclass << "\n";
-	saveFile << saveData.playername << "\n";
-	saveFile << saveData.playergender << "\n";
-}
 
-int const FirstScene::getSceneID() {
-	return SCENE_ID;
-}
+	int const FirstScene::getSceneID() {
+		return SCENE_ID;
+	}

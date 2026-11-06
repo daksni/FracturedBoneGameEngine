@@ -24,9 +24,11 @@ public:
 		int playerclass;
 	};
 
-	void playScene(Game* game, Player* player, Pronouns* pronouns); //Load a new scene
-	void genNewSave(Player* player); //Save any relevant information.
+	
+	void playScene(Game* game, Player* player, Pronouns* pronouns); 
+	void genNewSave(Player* player);
 
 	int const getSceneID();
+
 };
 

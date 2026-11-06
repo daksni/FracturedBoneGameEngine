@@ -47,14 +47,15 @@ void SceneTemplate::playScene(Game* game, Player* player, Pronouns* pronouns) {
 		return;
 	}
 	else {
+		while (game->keepGameRunning == true) {
+			//Add here the fucntions of the scene!
+			//Usually you will want to generate a save only after a condition within the scene playthrough is met.
+			//But having it seperate at the end of the exection should work.
+			genNewSave(player);
 
-		//Add here the fucntions of the scene!
-		//Usually you will want to generate a save only after a condition within the scene playthrough is met.
-		//But having it seperate at the end of the exection should work.
-		genNewSave(player);
+			//game->stop(); // <-- This command will stop the game execution.
 
-		//game->keepGameRunning = false; // <-- This command will stop the game execution.
-
+		}
 	}
 }
 

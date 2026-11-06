@@ -19,6 +19,76 @@ void Game::delay(int delayTime) {
 	std::this_thread::sleep_for(std::chrono::seconds(delayTime));
 }
 
+
+int Game::writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color) {
+	//Locate and configure the font.
+	std::string fontPath = fontName + ".ttf";
+
+	font = TTF_OpenFont(
+		fontPath.c_str(), //Targeted font
+		fontSize //Font size
+	);
+
+	if (font == nullptr) {
+		SDL_Log("Font loading failed: %s", SDL_GetError());
+		return -1;
+	}
+
+	//Render the text into a surface.
+	SDL_Surface* textSurface = TTF_RenderText_Blended(
+		font,
+		text.c_str(),
+		0,
+		color
+	);
+
+	if (textSurface == nullptr) {
+		TTF_CloseFont(font);
+		return -1;
+	}
+
+	//Convert the surface into a texture.
+	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(
+		renderer,
+		textSurface
+	);
+
+	if (textTexture == nullptr) {
+		SDL_DestroySurface(textSurface);
+		TTF_CloseFont(font);
+		return -1;
+	}
+
+	//Define the text position.
+	SDL_FRect textPosition = {
+		x_coord,
+		y_coord,
+		(float)textSurface->w,
+		(float)textSurface->h
+	};
+
+	//Draw the text.
+	SDL_RenderTexture(renderer, textTexture, nullptr, &textPosition);
+
+	//Release temporary resources.
+	SDL_DestroyTexture(textTexture);
+	SDL_DestroySurface(textSurface);
+	TTF_CloseFont(font);
+
+
+	return 0;
+}
+
+void Game::clearScreen() {
+	SDL_SetRenderDrawColor(renderer,0, 0, 0, 255);
+
+	SDL_RenderClear(renderer);
+}
+
+void Game::render() {
+	SDL_RenderPresent(renderer);
+}
+
 //============================ CHECK FOR SAVE FILE =======================================//
 
 int Game::loadGame() {
@@ -33,111 +103,178 @@ int Game::loadGame() {
 	}
 }
 
+//======================================== CREATE WINDOW ==================================//
+
+int Game::makeWindow() {
+		//Initialize the window.
+	if (!SDL_Init(SDL_INIT_VIDEO)) {
+		return -1;
+	}
+
+	//Create the window.
+	window = SDL_CreateWindow(
+		"Elder Bone Software -- Fractured Bone Game Engine", //Title
+		800, //Width
+		600, //Height
+		0 //Locked size, change to SDL_WINDOW_RESIZABLE if you want a resizable window
+	);
+
+	//Make a renderer.
+	renderer = SDL_CreateRenderer(window, nullptr);
+
+	if (window == nullptr) {
+		SDL_Quit();
+		return -1;
+	}
+
+	//Initialize the text renderer.
+	if (!TTF_Init()) {
+		SDL_Log("TTF initialization failed: %s", SDL_GetError());
+		return -1;
+	}
+
+	return 0;
+
+}
+
 //============================== GAME SETUP FUNCTIONS ====================================//
 
 void Game::settingHowThePlayerShouldBeCalled(Player* player) {
-
 	std::string setupName;
+	bool nameConfirmed = false;
 
-	std::cout << "Player's Name: ";
-	std::getline(std::cin, setupName);
+	writeText("ARIAL", 25, "TYPE YOUR NAME. AND PRESS ENTER!", 1, 1, { 255, 255, 255, 255 });
+	render();
 
-	while (setupName.empty()) {
-		std::cout << "\nYou've given an incorrect input! Please try again.\nName: ";
-		std::getline(std::cin, setupName);
+	SDL_StartTextInput(window);
+
+	while (nameConfirmed == false && keepGameRunning == true) {
+		SDL_Event event;
+
+		while (SDL_PollEvent(&event)) {
+
+			if (event.type == SDL_EVENT_TEXT_INPUT) {
+				setupName += event.text.text;
+			}
+
+			if (event.type == SDL_EVENT_KEY_DOWN) {
+
+				if (event.key.key == SDLK_BACKSPACE && !setupName.empty()) {
+					setupName.pop_back();
+				}
+
+				if (event.key.key == SDLK_RETURN) {
+
+					if (!setupName.empty()) {
+						player->setPlayerName(setupName);
+						nameConfirmed = true;
+						break;
+					}
+				}
+			}
+		}
 	}
 
-	player->setPlayerName(setupName);
+	SDL_StopTextInput(window);
 
 }
 
 void Game::settingThePlayerGender(Player* player) {
+	bool genderConfirmed = false;
 
-	const struct Gender {
-		const std::string INPUT_MALE = "1";
-		const std::string INPUT_FEMALE = "2";
-
-		const int SELECT_MALE = 1;
-		const int SELECT_FEMALE = 2;
-
-	};
-
-	Gender gender;
-
-	std::string setupGender;
-
-	std::cout << "\nIs " << player->getPlayerName() << " male or female?" << "\nType[1] for Male or [2] for Female: ";
-	std::getline(std::cin, setupGender);
-
-	while (setupGender.empty() || (setupGender != gender.INPUT_MALE && setupGender != gender.INPUT_FEMALE)) {
-		std::cout << "\nYou've given an incorrect input! Please try again.\nType[1] for Male or [2] for Female: ";
-		std::getline(std::cin, setupGender);
+	clearScreen();
+	writeText("ARIAL", 25, "Is " + player->getPlayerName() + " male or female ? ", 1, 1, { 255, 255, 255, 255 });
+	writeText("ARIAL", 25, "Press [1] for Male. Press [2] for Female", 1, 25, { 255, 255, 255, 255 });
+	render();
+	
+	while (genderConfirmed == false && keepGameRunning == true) {
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_EVENT_KEY_DOWN) {
+				if (event.key.key == SDLK_1) {
+					player->setPlayerGender(Player::PlayerGender::MALE);
+					genderConfirmed = true;
+					break;
+				}
+				else if (event.key.key == SDLK_2) {
+					player->setPlayerGender(Player::PlayerGender::FEMALE);
+					genderConfirmed = true;
+					break;
+				}
+			}
+		}
 	}
 
-	if (setupGender == gender.INPUT_MALE) {
-		player->setPlayerGender(gender.SELECT_MALE);
-	}
-	else if (setupGender == gender.INPUT_FEMALE) {
-		player->setPlayerGender(gender.SELECT_FEMALE);
+	if (genderConfirmed == true) {
+		clearScreen();
+		if (player->getPlayerGender() == Player::PlayerGender::MALE) {
+			writeText("ARIAL", 25, player->getPlayerName() + " is male.", 1, 1, { 150, 255, 255, 255 });
+		}
+		else if (player->getPlayerGender() == Player::PlayerGender::FEMALE) {
+			writeText("ARIAL", 25, player->getPlayerName() + " is female.", 1, 1, { 255, 200, 255, 255 });
+		}
+		render();
 	}
 
 }
 
 void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
+	bool isPlayerClassConfirmed = false;
 
-	std::string setupClass;
+	delay(1);
+	clearScreen();
+	writeText("ARIAL", 25, "Great, now what class does " + pronouns->getLSubject(player) + " belongs to?",
+		1, 1, { 255, 255, 255, 255 });
+	writeText("ARIAL", 25, "Press[1] for knight, ", 1, 30, { 200, 200, 200, 255 });	
+	writeText("ARIAL", 25, "[2] for Wizard, ", 220, 30, { 200, 255, 255, 255 });
+	writeText("ARIAL", 25, "[3] for Bard, ", 385, 30, { 255, 255, 200, 255 });
+	writeText("ARIAL", 25, "[4] for Noble", 525, 30, { 255, 200, 200, 255});
+	writeText("ARIAL", 25, "or [5] for Wretch.", 1, 60, { 200, 255, 200, 255});
+	render();
 
-	const struct ClassWheel {
-		const std::string INPUT_KNIGHT = "1";
-		const std::string INPUT_WIZARD = "2";
-		const std::string INPUT_BARD = "3";
-		const std::string INPUT_NOBLE = "4";
-		const std::string INPUT_WRETCH = "5";
-
-	};
-
-	ClassWheel classWheel;
-
-	std::cout << "\nGreat, now what class does " << pronouns->getLSubject(player) <<
-		" belongs to?\nType [1] for knight, [2] for Wizard, [3] for Bard, [4] for Noble or [5] for Wretch: ";
-	std::getline(std::cin, setupClass);
-
-	while (setupClass.empty() || (setupClass != classWheel.INPUT_KNIGHT &&
-		setupClass != classWheel.INPUT_WIZARD &&
-		setupClass != classWheel.INPUT_BARD &&
-		setupClass != classWheel.INPUT_NOBLE &&
-		setupClass != classWheel.INPUT_WRETCH)) {
-
-		std::cout << "\nThe provided class is nonexistent! Please, choose again!";
-		std::getline(std::cin, setupClass);
-
+	while (isPlayerClassConfirmed == false) {
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_EVENT_KEY_DOWN) {
+				if (event.key.key == SDLK_1) {
+					player->setPlayerClass(Player::PlayerClass::KNIGHT);
+					isPlayerClassConfirmed = true;
+					break;
+				}
+				else if (event.key.key == SDLK_2) {
+					player->setPlayerClass(Player::PlayerClass::WIZARD);
+					isPlayerClassConfirmed = true;
+					break;
+				}
+				else if (event.key.key == SDLK_3) {
+					player->setPlayerClass(Player::PlayerClass::BARD);
+					isPlayerClassConfirmed = true;
+					break;
+				}
+				else if (event.key.key == SDLK_4) {
+					player->setPlayerClass(Player::PlayerClass::NOBLE);
+					isPlayerClassConfirmed = true;
+					break;
+				}
+				else if (event.key.key == SDLK_5) {
+					player->setPlayerClass(Player::PlayerClass::WRETCH);
+					isPlayerClassConfirmed = true;
+					break;
+				}
+			}
+		}
 	}
 
-	if (setupClass == classWheel.INPUT_KNIGHT) {
-		player->setPlayerClass(player->PlayerClass::KNIGHT);
+	if (isPlayerClassConfirmed == true) {
+		player->setPlayerAttributesAccordinglyToClass();
+		player->vomitAllAttr();
 	}
-	else if (setupClass == classWheel.INPUT_WIZARD) {
-		player->setPlayerClass(player->PlayerClass::WIZARD);
-	}
-	else if (setupClass == classWheel.INPUT_BARD) {
-		player->setPlayerClass(player->PlayerClass::BARD);
-	}
-	else if (setupClass == classWheel.INPUT_NOBLE) {
-		player->setPlayerClass(player->PlayerClass::NOBLE);
-	}
-	else if (setupClass == classWheel.INPUT_WRETCH) {
-		player->setPlayerClass(player->PlayerClass::WRETCH);
-	}
-
-	player->setPlayerAttributesAccordinglyToClass();
-	player->vomitAllAttr();
-
 }
+
 
 //========================================= GAME CORE =====================================//
 
 void Game::setup(Game* game, Player* player, Pronouns* pronouns) {
-	std::cout << "Hello, welcome to this prototype!\n";
 	settingHowThePlayerShouldBeCalled(player);
 	settingThePlayerGender(player);
 	settingThePlayerClass(player, pronouns);
@@ -149,10 +286,9 @@ void Game::sceneScheduler(Game* game, Player* player, Pronouns* pronouns) {
 	while (keepGameRunning == true) {
 		setup(game, player, pronouns);
 		scene1.playScene(game, player, pronouns);
-		break;
 	}
+	
 }
-
 
 //Checks if there's a previous save and load based on the sceneID.
 void Game::loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns) {
@@ -177,6 +313,21 @@ void Game::loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns)
 }
 
 void Game::run(Game* game, Player* player, Pronouns* pronouns) {
+	makeWindow();
 	loadSceneFromSaveGame(game, player, pronouns);
 }
 
+//THIS COMMAND KILLS THE GAME. ONLY USE IT IF THAT IS THE DESIRED FUNCTION.
+void Game::stop() {
+	TTF_Quit();
+
+	SDL_DestroyRenderer(renderer);
+	renderer = nullptr;
+
+	SDL_DestroyWindow(window);
+	window = nullptr;
+
+	SDL_Quit();
+
+	keepGameRunning = false;
+}
