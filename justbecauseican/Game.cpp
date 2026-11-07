@@ -274,24 +274,24 @@ void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
 
 //========================================= GAME CORE =====================================//
 
-void Game::setup(Game* game, Player* player, Pronouns* pronouns) {
+void Game::setup(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	settingHowThePlayerShouldBeCalled(player);
 	settingThePlayerGender(player);
 	settingThePlayerClass(player, pronouns);
-	firstScene.playScene(game, player, pronouns); //After setup is complete, run the first scene!
+	firstScene.playScene(game, save, player, pronouns); //After setup is complete, run the first scene!
 }
 
 //Schedules All scenes. ADD EVERY SCENE HERE IN ORDER!
-void Game::sceneScheduler(Game* game, Player* player, Pronouns* pronouns) {
+void Game::sceneScheduler(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	while (keepGameRunning == true) {
-		setup(game, player, pronouns);
-		scene1.playScene(game, player, pronouns);
+		setup(game, save, player, pronouns);
+		scene1.playScene(game, save, player, pronouns);
 	}
 	
 }
 
 //Checks if there's a previous save and load based on the sceneID.
-void Game::loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns) {
+void Game::loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	//Fetch the scene ID of a previous save if there is one:
 	int sceneID = loadGame();
 
@@ -299,22 +299,22 @@ void Game::loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns)
 	//ALL SCENES MUST BE HERE FOR A PROPER LOAD. Add "else if"s for new IDs.
 	if (sceneID != 0) { 
 		if (sceneID == scene1.getSceneID()) {
-			scene1.playScene(game, player, pronouns);
+			scene1.playScene(game, save, player, pronouns);
 		}
 		else {
 			//If none of the possible IDs match a scene, reload the setup.
-			sceneScheduler(game, player, pronouns);
+			sceneScheduler(game, save, player, pronouns);
 		}
 
 	}
 	else { //If there is no previous save, load the setup.
-		sceneScheduler(game, player, pronouns);
+		sceneScheduler(game, save, player, pronouns);
 	}
 }
 
-void Game::run(Game* game, Player* player, Pronouns* pronouns) {
+void Game::run(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	makeWindow();
-	loadSceneFromSaveGame(game, player, pronouns);
+	loadSceneFromSaveGame(game, save, player, pronouns);
 }
 
 //THIS COMMAND KILLS THE GAME. ONLY USE IT IF THAT IS THE DESIRED FUNCTION.

@@ -31,9 +31,9 @@ public:
 	void settingThePlayerGender(Player* player);
 	void settingThePlayerClass(Player* player, Pronouns* pronouns);
 
-	void setup(Game* game, Player* player, Pronouns* pronouns);
-	void sceneScheduler(Game* game, Player* player, Pronouns* pronouns);
-	void loadSceneFromSaveGame(Game* game, Player* player, Pronouns* pronouns);
+	void setup(Game* game, Save* save, Player* player, Pronouns* pronouns);
+	void sceneScheduler(Game* game, Save* save, Player* player, Pronouns* pronouns);
+	void loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronouns* pronouns);
 
 	int writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color);
 	void render();
@@ -41,7 +41,7 @@ public:
 	void clearScreen();
 	int makeWindow();
 
-	void run(Game* game, Player* player, Pronouns* pronouns);
+	void run(Game* game, Save* save, Player* player, Pronouns* pronouns);
 	void stop();
 	
 
