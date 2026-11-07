@@ -29,7 +29,7 @@ bool Save::load(std::string saveFileName) {
 		return true;
 	}
 	else {
-		std::cout << "FATAL ERROR: COULD NOT OPEN SAVE FILE!";
+		std::cout << "THE SPECIFIED SAVE FILE WAS NOT FOUND!";
 		return false;
 	}
 }

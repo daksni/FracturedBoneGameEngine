@@ -3,8 +3,6 @@
 //The usage of this code freely is allowed as long as the author is credited.
 
 #pragma once
-
-#include <string>
 #include "Player.h"
 
 class Pronouns

@@ -15,7 +15,7 @@
 //This allows you to make different files, for either backups or new games.
 
 #pragma once
-#include "Game.h";
+#include "All.h"
 
 class Save
 {

@@ -62,5 +62,8 @@
     <ClInclude Include="Save.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="All.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

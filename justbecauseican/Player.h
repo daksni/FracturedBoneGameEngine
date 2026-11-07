@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include <string>
-#include <iostream>
+#include "All.h"
 
 
 class Player

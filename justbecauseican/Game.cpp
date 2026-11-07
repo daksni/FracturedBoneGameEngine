@@ -91,12 +91,11 @@ void Game::render() {
 
 //============================ CHECK FOR SAVE FILE =======================================//
 
-int Game::loadGame() {
+int Game::loadGame(Save* save) {
 	int fetchID;
-	std::ifstream saveFile("data.fbgesvdt");
-	if (saveFile.is_open()) {
-		saveFile >> fetchID;
-		return fetchID;
+	if(save->load("data")){
+	fetchID = save->saveData.sceneID;
+	return fetchID;
 	}
 	else {
 		return 0;
@@ -274,17 +273,18 @@ void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
 
 //========================================= GAME CORE =====================================//
 
-void Game::setup(Game* game, Save* save, Player* player, Pronouns* pronouns) {
+void Game::setup(Game* game, Player* player, Pronouns* pronouns) {
 	settingHowThePlayerShouldBeCalled(player);
 	settingThePlayerGender(player);
 	settingThePlayerClass(player, pronouns);
-	firstScene.playScene(game, save, player, pronouns); //After setup is complete, run the first scene!
+	
 }
 
 //Schedules All scenes. ADD EVERY SCENE HERE IN ORDER!
 void Game::sceneScheduler(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	while (keepGameRunning == true) {
-		setup(game, save, player, pronouns);
+		setup(game, player, pronouns);
+		firstScene.playScene(game, save, player, pronouns);
 		scene1.playScene(game, save, player, pronouns);
 	}
 	
@@ -293,7 +293,7 @@ void Game::sceneScheduler(Game* game, Save* save, Player* player, Pronouns* pron
 //Checks if there's a previous save and load based on the sceneID.
 void Game::loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	//Fetch the scene ID of a previous save if there is one:
-	int sceneID = loadGame();
+	int sceneID = loadGame(save);
 
 	//Check the scene IDs to load proper scene.
 	//ALL SCENES MUST BE HERE FOR A PROPER LOAD. Add "else if"s for new IDs.

@@ -3,14 +3,7 @@
 //The usage of this code freely is allowed as long as the author is credited.
 
 #pragma once
-#include <iostream>
-#include <chrono>
-#include <thread>
-#include <string>
-#include <fstream>
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
-
+#include "All.h"
 #include "Player.h"
 #include "Pronouns.h"
 #include "Save.h"
@@ -25,13 +18,13 @@ public:
 	void delay(int delayTime);
 	bool keepGameRunning = true;
 
-	int loadGame();
+	int loadGame(Save* save);
 
 	void settingHowThePlayerShouldBeCalled(Player* player);
 	void settingThePlayerGender(Player* player);
 	void settingThePlayerClass(Player* player, Pronouns* pronouns);
 
-	void setup(Game* game, Save* save, Player* player, Pronouns* pronouns);
+	void setup(Game* game, Player* player, Pronouns* pronouns);
 	void sceneScheduler(Game* game, Save* save, Player* player, Pronouns* pronouns);
 	void loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronouns* pronouns);
 
