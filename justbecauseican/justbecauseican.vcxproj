@@ -141,6 +141,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Pronouns.cpp" />
+    <ClCompile Include="Save.cpp" />
     <ClCompile Include="Scene1.cpp" />
     <ClCompile Include="SceneTemplate.cpp" />
     <ClCompile Include="source.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Pronouns.h" />
+    <ClInclude Include="Save.h" />
     <ClInclude Include="Scene1.h" />
     <ClInclude Include="SceneTemplate.h" />
   </ItemGroup>

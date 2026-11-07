@@ -14,19 +14,9 @@ class FirstScene
 private:
 	const int SCENE_ID = 1;
 public:
-
-	//Declare any information that must be saved here.
-	struct SaveData {
-		int sceneid;
-		int playerlife;
-		std::string playername;
-		int playergender;
-		int playerclass;
-	};
-
 	
-	void playScene(Game* game, Player* player, Pronouns* pronouns); 
-	void genNewSave(Player* player);
+	void playScene(Game* game, Save* save, Player* player, Pronouns* pronouns); 
+	void genNewSave(Save* save, Player* player);
 
 	int const getSceneID();
 

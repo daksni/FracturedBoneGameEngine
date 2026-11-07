@@ -9,36 +9,27 @@
 #include "Scene1.h"
 
 
-bool Scene1::getSaveData(Player* player) {
-	Scene1::SaveData saveData;
+bool Scene1::getSaveData(Save* save, Player* player) {
 
-	std::ifstream saveFile("data.fbgesvdt");
-
-	if (saveFile.is_open()) {
-		//Read the data.
-		saveFile >> saveData.sceneid;
-		saveFile >> saveData.playerlife;
-		saveFile >> saveData.playerclass;
-		std::getline(saveFile >> std::ws, saveData.playername);
-		saveFile >> saveData.playergender;
-
+	if (save->load("data") == true) {
 		//Apply necessary changes.
-		if (saveData.sceneid == SCENE_ID) {
-			player->setPlayerLife(saveData.playerlife);
-			player->setPlayerClass(saveData.playerclass);
-			player->setPlayerName(saveData.playername);
-			player->setPlayerGender(saveData.playergender);
-			return true;
+		if (save->saveData.sceneID == SCENE_ID) {
+			player->setPlayerLife(save->saveData.playerLife);
+			player->setPlayerClass(save->saveData.playerClass);
+			player->setPlayerName(save->saveData.playerName);
+			player->setPlayerGender(save->saveData.playerGender);
 		}
-		else {
-			return false;
-		}
+		return true;
+	}
+	else {
+		std::cout << "\nFATAL ERROR: THE SAVE FILE DOES NOT EXIST.";
 		return false;
 	}
+
 }
 
-void Scene1::playScene(Game* game, Player* player, Pronouns* pronouns) {
-	if (getSaveData(player) == false) {
+void Scene1::playScene(Game* game, Save* save, Player* player, Pronouns* pronouns) {
+	if (getSaveData(save, player) == false) {
 		return;
 	}
 	else {
@@ -50,7 +41,7 @@ void Scene1::playScene(Game* game, Player* player, Pronouns* pronouns) {
 			game->render();
 
 			//Usually you will want to generate a save after a condition is met.
-			genNewSave(player);
+			genNewSave(save, player);
 
 			game->delay(2);
 			game->stop();
@@ -59,23 +50,16 @@ void Scene1::playScene(Game* game, Player* player, Pronouns* pronouns) {
 	}
 }
 
-void Scene1::genNewSave(Player* player) {
-	Scene1::SaveData saveData;
+void Scene1::genNewSave(Save* save, Player* player) {
 
 	//Set the value of the saved information.
-	saveData.sceneid = SCENE_ID + 1; //The save will change this to an invalid ID, and the game will reset.
-	saveData.playerlife = player->getPlayerLife();
-	saveData.playerclass = player->getPlayerClass();
-	saveData.playername = player->getPlayerName();
-	saveData.playergender = player->getPlayerGender();
+	save->saveData.sceneID = SCENE_ID + 1; //The save will change this to an invalid ID, and the game will reset.
+	save->saveData.playerLife = player->getPlayerLife();
+	save->saveData.playerClass = player->getPlayerClass();
+	save->saveData.playerName = player->getPlayerName();
+	save->saveData.playerGender = player->getPlayerGender();
 
-	//Save values to the save file.
-	std::ofstream saveFile("data.fbgesvdt");
-	saveFile << saveData.sceneid << "\n";
-	saveFile << saveData.playerlife << "\n";
-	saveFile << saveData.playerclass << "\n";
-	saveFile << saveData.playername << "\n";
-	saveFile << saveData.playergender << "\n";
+	save->save("data");
 }
 
 int const Scene1::getSceneID() {

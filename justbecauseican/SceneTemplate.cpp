@@ -14,36 +14,27 @@
 #include "SceneTemplate.h"
 
 
-bool SceneTemplate::getSaveData(Player* player) {
-	SceneTemplate::SaveData saveData;
+bool SceneTemplate::getSaveData(Save* save, Player* player) {
 
-	std::ifstream saveFile("data.fbgesvdt");
-
-	if (saveFile.is_open()) {
-		//Read the data.
-		saveFile >> saveData.sceneid;
-		saveFile >> saveData.playerlife;
-		saveFile >> saveData.playerclass;
-		std::getline(saveFile >> std::ws, saveData.playername);
-		saveFile >> saveData.playergender;
-
+	if (save->load("data") == true) {
 		//Apply necessary changes.
-		if (saveData.sceneid == SCENE_ID) {
-			player->setPlayerLife(saveData.playerlife);
-			player->setPlayerClass(saveData.playerclass);
-			player->setPlayerName(saveData.playername);
-			player->setPlayerGender(saveData.playergender);
-			return true;
+		if (save->saveData.sceneID == SCENE_ID) {
+			player->setPlayerLife(save->saveData.playerLife);
+			player->setPlayerClass(save->saveData.playerClass);
+			player->setPlayerName(save->saveData.playerName);
+			player->setPlayerGender(save->saveData.playerGender);
 		}
-		else {
-			return false;
-		}
+		return true;
+	}
+	else {
+		std::cout << "\nFATAL ERROR: THE SAVE FILE DOES NOT EXIST.";
 		return false;
 	}
+
 }
 
-void SceneTemplate::playScene(Game* game, Player* player, Pronouns* pronouns) {
-	if (getSaveData(player) == false) {
+void SceneTemplate::playScene(Game* game, Save* save, Player* player, Pronouns* pronouns) {
+	if (getSaveData(save, player) == false) {
 		return;
 	}
 	else {
@@ -51,7 +42,7 @@ void SceneTemplate::playScene(Game* game, Player* player, Pronouns* pronouns) {
 			//Add here the fucntions of the scene!
 			//Usually you will want to generate a save only after a condition within the scene playthrough is met.
 			//But having it seperate at the end of the exection should work.
-			genNewSave(player);
+			genNewSave(save, player);
 
 			//game->stop(); // <-- This command will stop the game execution.
 
@@ -59,23 +50,16 @@ void SceneTemplate::playScene(Game* game, Player* player, Pronouns* pronouns) {
 	}
 }
 
-void SceneTemplate::genNewSave(Player* player) {
-	SceneTemplate::SaveData saveData;
+void SceneTemplate::genNewSave(Save* save, Player* player) {
 
 	//Set the value of the saved information.
-	saveData.sceneid = SCENE_ID + 1;
-	saveData.playerlife = player->getPlayerLife();
-	saveData.playerclass = player->getPlayerClass();
-	saveData.playername = player->getPlayerName();
-	saveData.playergender = player->getPlayerGender();
+	save->saveData.sceneID = SCENE_ID + 1;
+	save->saveData.playerLife = player->getPlayerLife();
+	save->saveData.playerClass = player->getPlayerClass();
+	save->saveData.playerName = player->getPlayerName();
+	save->saveData.playerGender = player->getPlayerGender();
 
-	//Save values to the save file.
-	std::ofstream saveFile("data.fbgesvdt");
-	saveFile << saveData.sceneid << "\n";
-	saveFile << saveData.playerlife << "\n";
-	saveFile << saveData.playerclass << "\n";
-	saveFile << saveData.playername << "\n";
-	saveFile << saveData.playergender << "\n";
+	save->save("data");
 }
 
 int const SceneTemplate::getSceneID() {

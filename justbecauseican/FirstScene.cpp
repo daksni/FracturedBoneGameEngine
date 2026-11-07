@@ -8,7 +8,7 @@
 #include "FirstScene.h"
 
 
-void FirstScene::playScene(Game* game, Player* player, Pronouns* pronouns) {
+void FirstScene::playScene(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	bool isSceneOver = false;
 	bool quitGame = false;
 
@@ -36,7 +36,7 @@ void FirstScene::playScene(Game* game, Player* player, Pronouns* pronouns) {
 	}
 
 	if (isSceneOver == true && quitGame == false) {
-		genNewSave(player);
+		genNewSave(save, player);
 	}
 	else if (quitGame == true) {
 		game->stop();
@@ -45,23 +45,15 @@ void FirstScene::playScene(Game* game, Player* player, Pronouns* pronouns) {
 
 }
 
-	void FirstScene::genNewSave(Player * player) {
-		FirstScene::SaveData saveData;
-
+	void FirstScene::genNewSave(Save* save, Player * player) {
 		//Set the value of the saved information.
-		saveData.sceneid = SCENE_ID + 1;
-		saveData.playerlife = player->getPlayerLife();
-		saveData.playerclass = player->getPlayerClass();
-		saveData.playername = player->getPlayerName();
-		saveData.playergender = player->getPlayerGender();
+		save->saveData.sceneID = SCENE_ID + 1;
+		save->saveData.playerLife = player->getPlayerLife();
+		save->saveData.playerClass = player->getPlayerClass();
+		save->saveData.playerName = player->getPlayerName();
+		save->saveData.playerGender = player->getPlayerGender();
 
-		//Save values to the save file.
-		std::ofstream saveFile("data.fbgesvdt");
-		saveFile << saveData.sceneid << "\n";
-		saveFile << saveData.playerlife << "\n";
-		saveFile << saveData.playerclass << "\n";
-		saveFile << saveData.playername << "\n";
-		saveFile << saveData.playergender << "\n";
+		save->save("data");
 	}
 
 
