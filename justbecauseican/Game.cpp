@@ -207,10 +207,10 @@ void Game::settingThePlayerGender(Player* player) {
 	if (genderConfirmed == true) {
 		clearScreen();
 		if (player->getPlayerGender() == Player::PlayerGender::MALE) {
-			writeText("ARIAL", 25, player->getPlayerName() + " is male.", 1, 1, { 150, 255, 255, 255 });
+			writeText("ARIAL", 25, player->getPlayerName() + " is male.", 1, 1, { 100, 255, 255, 255 });
 		}
 		else if (player->getPlayerGender() == Player::PlayerGender::FEMALE) {
-			writeText("ARIAL", 25, player->getPlayerName() + " is female.", 1, 1, { 255, 200, 255, 255 });
+			writeText("ARIAL", 25, player->getPlayerName() + " is female.", 1, 1, { 255, 180, 255, 255 });
 		}
 		render();
 	}

@@ -28,27 +28,125 @@ bool Scene1::getSaveData(Save* save, Player* player) {
 
 }
 
+
 void Scene1::playScene(Game* game, Save* save, Player* player, Pronouns* pronouns) {
-	if (getSaveData(save, player) == false) {
-		return;
-	}
-	else {
-		while (game->keepGameRunning == true) {
 
-			//Add here the fucntions of the scene! Here a simple example where the game shuts off.
-			game->clearScreen();
-			game->writeText("ARIAL", 25, "NOTHING IN THE MOMENT. THE GAME WILL QUIT SHORTLY", 1, 1, { 255, 255, 255, 255 });
-			game->render();
+    // Starter positions.
+    int playerPosX = 400;
+    int playerPosY = 300;
 
-			//Usually you will want to generate a save after a condition is met.
-			genNewSave(save, player);
+    int tagPosX = playerPosX;
+    int tagPosY = playerPosY;
 
-			game->delay(2);
-			game->stop();
+    bool moveUp = false;
+    bool moveDown = false;
+    bool moveRight = false;
+    bool moveLeft = false;
 
-		}
-	}
+    // World boundaries.
+    int worldMinX = 20;
+    int worldMaxX = 750;
+    int worldMinY = 50;
+    int worldMaxY = 550;
+
+    if (getSaveData(save, player) == false) {
+        return;
+    }
+    else {
+        while (game->keepGameRunning == true) {
+
+            SDL_Event event;
+
+            while (SDL_PollEvent(&event)) {
+
+                if (event.type == SDL_EVENT_QUIT) {
+                    genNewSave(save, player);
+                    game->stop();
+                }
+
+                if (event.type == SDL_EVENT_KEY_DOWN) {
+
+                    //Process movement in.
+                    if (event.key.key == SDLK_W) moveUp = true;
+                    if (event.key.key == SDLK_S) moveDown = true;
+                    if (event.key.key == SDLK_D) moveRight = true;
+                    if (event.key.key == SDLK_A) moveLeft = true;
+
+                    //Quit on ESC.
+                    if (event.key.key == SDLK_ESCAPE) {
+                        genNewSave(save, player);
+                        game->stop();
+                    }
+
+                }
+
+                else if (event.type == SDL_EVENT_KEY_UP) {
+
+                    //Process movement out
+                    if (event.key.key == SDLK_W) moveUp = false;
+                    if (event.key.key == SDLK_S) moveDown = false;
+                    if (event.key.key == SDLK_D) moveRight = false;
+                    if (event.key.key == SDLK_A) moveLeft = false;
+
+                }
+               
+            }
+
+            // Calculate intended movement.
+            int nextX = playerPosX;
+            int nextY = playerPosY;
+
+            if (moveUp) nextY -= 1;
+            if (moveDown) nextY += 1;
+            if (moveRight) nextX += 1;
+            if (moveLeft) nextX -= 1;
+
+            // Check world boundaries.
+            if (nextX >= worldMinX && nextX <= worldMaxX &&
+                nextY >= worldMinY && nextY <= worldMaxY) {
+
+                playerPosX = nextX;
+                playerPosY = nextY;
+
+            }
+
+            // Update name tag position.
+            tagPosX = playerPosX - 2;
+            tagPosY = playerPosY + 30;
+
+            game->clearScreen();
+
+            // Draw Player's sprite accordingly to class.
+            if (player->getPlayerClass() == Player::PlayerClass::KNIGHT) {
+                game->writeText("ARIAL", 25, "+[]+", playerPosX, playerPosY, { 200, 200, 200, 255 });
+            }
+            else if (player->getPlayerClass() == Player::PlayerClass::WIZARD) {
+                game->writeText("ARIAL", 25, "![]!", playerPosX, playerPosY, { 200, 255, 255, 255 });
+            }
+            else if (player->getPlayerClass() == Player::PlayerClass::BARD) {
+                game->writeText("ARIAL", 25, "[^]{", playerPosX, playerPosY, { 255, 255, 200, 255 });
+            }
+            else if (player->getPlayerClass() == Player::PlayerClass::NOBLE) {
+                game->writeText("ARIAL", 25, "^{~}^", playerPosX, playerPosY, { 255, 200, 200, 255 });
+            }
+            else if (player->getPlayerClass() == Player::PlayerClass::WRETCH) {
+                game->writeText("ARIAL", 25, "[]", playerPosX, playerPosY, { 200, 255, 200, 255 });
+            }
+
+            // Draw Player's name tag, accordingly to gender.
+            if (player->getPlayerGender() == Player::PlayerGender::MALE) {
+                game->writeText("ARIAL", 11, player->getPlayerName(), tagPosX, tagPosY, { 100, 255, 255, 255 });
+            }
+            else if (player->getPlayerGender() == Player::PlayerGender::FEMALE) {
+                game->writeText("ARIAL", 11, player->getPlayerName(), tagPosX, tagPosY, { 255, 180, 255, 255 });
+            }
+
+            game->render();
+
+        }
+    }
 }
+
 
 void Scene1::genNewSave(Save* save, Player* player) {
 
