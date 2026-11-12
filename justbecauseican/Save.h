@@ -23,9 +23,9 @@ public:
 
 	struct SaveData {
 		int sceneID;
-		std::string playerName;
-		int playerGender;
-		int playerClass;
+		//std::string playerName;
+		//int playerGender;
+		//int playerClass;
 		int playerLife;
 		//Add here things that must be saved.
 	};

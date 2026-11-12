@@ -11,5 +11,10 @@
 #include <thread>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <glad/gl.h>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>

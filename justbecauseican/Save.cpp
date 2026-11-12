@@ -21,9 +21,9 @@ bool Save::load(std::string saveFileName) {
 	std::ifstream saveFile(saveFileName + ".fbgesvdt");
 	if (saveFile.is_open()) {
 		saveFile >> saveData.sceneID;
-		std::getline(saveFile >> std::ws, saveData.playerName);
-		saveFile >> saveData.playerGender;
-		saveFile >> saveData.playerClass;
+		//std::getline(saveFile >> std::ws, saveData.playerName);
+		//saveFile >> saveData.playerGender;
+		//saveFile >> saveData.playerClass;
 		saveFile >> saveData.playerLife;
 
 		return true;
@@ -37,8 +37,8 @@ bool Save::load(std::string saveFileName) {
 void Save::save(std::string saveFileName) {
 	std::ofstream saveFile(saveFileName + ".fbgesvdt");
 	saveFile << saveData.sceneID << "\n";
-	saveFile << saveData.playerName << "\n";
-	saveFile << saveData.playerGender << "\n";
-	saveFile << saveData.playerClass << "\n";
+	//saveFile << saveData.playerName << "\n";
+	//saveFile << saveData.playerGender << "\n";
+	//saveFile << saveData.playerClass << "\n";
 	saveFile << saveData.playerLife << "\n";
 }

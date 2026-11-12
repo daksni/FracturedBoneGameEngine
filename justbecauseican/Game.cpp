@@ -19,14 +19,29 @@ void Game::delay(int delayTime) {
 	std::this_thread::sleep_for(std::chrono::seconds(delayTime));
 }
 
+void Game::clearScreen() {
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Game::render() {
+	SDL_GL_SwapWindow(window);
+}
+
+void Game::initAllShaders() {
+	shaders->initTextShaders();
+	shaders->init3DCubePrimitiveShaders();
+}
+
+//=============================================== TEXT CREATION =================================================//
 
 int Game::writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color) {
-	//Locate and configure the font.
+	// Locate and configure the font.
 	std::string fontPath = fontName + ".ttf";
 
 	font = TTF_OpenFont(
-		fontPath.c_str(), //Targeted font
-		fontSize //Font size
+		fontPath.c_str(),
+		fontSize
 	);
 
 	if (font == nullptr) {
@@ -34,7 +49,7 @@ int Game::writeText(std::string fontName, int fontSize, std::string text, float 
 		return -1;
 	}
 
-	//Render the text into a surface.
+	// Render text into an SDL surface.
 	SDL_Surface* textSurface = TTF_RenderText_Blended(
 		font,
 		text.c_str(),
@@ -47,46 +62,124 @@ int Game::writeText(std::string fontName, int fontSize, std::string text, float 
 		return -1;
 	}
 
-	//Convert the surface into a texture.
-	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(
-		renderer,
-		textSurface
+	// Convert surface to a predictable RGBA pixel format.
+	SDL_Surface* convertedSurface = SDL_ConvertSurface(
+		textSurface,
+		SDL_PIXELFORMAT_RGBA32
 	);
 
-	if (textTexture == nullptr) {
-		SDL_DestroySurface(textSurface);
+	SDL_DestroySurface(textSurface);
+
+	if (convertedSurface == nullptr) {
 		TTF_CloseFont(font);
 		return -1;
 	}
 
-	//Define the text position.
-	SDL_FRect textPosition = {
-		x_coord,
-		y_coord,
-		(float)textSurface->w,
-		(float)textSurface->h
+	// Generate an OpenGL texture.
+	GLuint textTexture = 0;
+	glGenTextures(1, &textTexture);
+	glBindTexture(GL_TEXTURE_2D, textTexture);
+
+	// Configure texture filtering and wrapping.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Upload surface pixels to the GPU.
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, convertedSurface->pitch / 4);
+
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_RGBA8,
+		convertedSurface->w,
+		convertedSurface->h,
+		0,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		convertedSurface->pixels
+	);
+
+	// Restore pixel unpack settings.
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+	// Prepare the text rectangle.
+	float width = (float)convertedSurface->w;
+	float height = (float)convertedSurface->h;
+
+	float vertices[] = {
+		// Position             // Texture coordinates
+		x_coord,         y_coord,          0.0f, 0.0f,
+		x_coord + width, y_coord,          1.0f, 0.0f,
+		x_coord + width, y_coord + height, 1.0f, 1.0f,
+
+		x_coord,         y_coord,          0.0f, 0.0f,
+		x_coord + width, y_coord + height, 1.0f, 1.0f,
+		x_coord,         y_coord + height, 0.0f, 1.0f
 	};
 
-	//Draw the text.
-	SDL_RenderTexture(renderer, textTexture, nullptr, &textPosition);
+	// Activate the text shader.
+	glUseProgram(shaders->textShaderProgram);
 
-	//Release temporary resources.
-	SDL_DestroyTexture(textTexture);
-	SDL_DestroySurface(textSurface);
+	// Supply screen dimensions to the shader.
+	int screenWidth = 0;
+	int screenHeight = 0;
+
+	SDL_GetWindowSizeInPixels(window, &screenWidth, &screenHeight);
+
+	GLint screenSizeLocation = glGetUniformLocation(
+		shaders->textShaderProgram,
+		"screenSize"
+	);
+
+	glUniform2f(
+		screenSizeLocation,
+		(float)screenWidth,
+		(float)screenHeight
+	);
+
+	// Activate texture unit 0.
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textTexture);
+
+	GLint textSamplerLocation = glGetUniformLocation(
+		shaders->textShaderProgram,
+		"textTexture"
+	);
+
+	glUniform1i(textSamplerLocation, 0);
+
+	// Upload updated rectangle geometry.
+	glBindVertexArray(shaders->textVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, shaders->textVBO);
+
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		sizeof(vertices),
+		vertices,
+		GL_DYNAMIC_DRAW
+	);
+
+	// Enable transparency.
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Draw the text.
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Release temporary resources.
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glDeleteTextures(1, &textTexture);
+
+	SDL_DestroySurface(convertedSurface);
 	TTF_CloseFont(font);
 
-
 	return 0;
-}
-
-void Game::clearScreen() {
-	SDL_SetRenderDrawColor(renderer,0, 0, 0, 255);
-
-	SDL_RenderClear(renderer);
-}
-
-void Game::render() {
-	SDL_RenderPresent(renderer);
 }
 
 //============================ CHECK FOR SAVE FILE =======================================//
@@ -105,187 +198,68 @@ int Game::loadGame(Save* save) {
 //======================================== CREATE WINDOW ==================================//
 
 int Game::makeWindow() {
-		//Initialize the window.
+
+	// Initialize SDL.
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
+		SDL_Log("SDL initialization failed: %s", SDL_GetError());
 		return -1;
 	}
 
-	//Create the window.
+	// Request OpenGL 4.6 Core.
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+		SDL_GL_CONTEXT_PROFILE_CORE);
+
+	// Create the OpenGL window.
 	window = SDL_CreateWindow(
-		"Elder Bone Software -- Fractured Bone Game Engine", //Title
-		800, //Width
-		600, //Height
-		0 //Locked size, change to SDL_WINDOW_RESIZABLE if you want a resizable window
+		"Elder Bone Software -- Fractured Bone Game Engine",
+		1920,
+		1080,
+		SDL_WINDOW_OPENGL
 	);
 
-	//Make a renderer.
-	renderer = SDL_CreateRenderer(window, nullptr);
-
 	if (window == nullptr) {
+		SDL_Log("Window creation failed: %s", SDL_GetError());
 		SDL_Quit();
 		return -1;
 	}
 
-	//Initialize the text renderer.
+	// Create OpenGL context.
+	context = SDL_GL_CreateContext(window);
+
+	if (context == nullptr) {
+		SDL_Log("OpenGL context creation failed: %s", SDL_GetError());
+		SDL_DestroyWindow(window);
+		SDL_Quit();
+		return -1;
+	}
+
+	// Initialize GLAD.
+	if (!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress)) {
+		SDL_Log("GLAD initialization failed!");
+		SDL_GL_DestroyContext(context);
+		SDL_DestroyWindow(window);
+		SDL_Quit();
+		return -1;
+	}
+
+	// Initialize SDL_ttf.
 	if (!TTF_Init()) {
 		SDL_Log("TTF initialization failed: %s", SDL_GetError());
 		return -1;
 	}
 
 	return 0;
-
 }
-
-//============================== GAME SETUP FUNCTIONS ====================================//
-
-void Game::settingHowThePlayerShouldBeCalled(Player* player) {
-	std::string setupName;
-	bool nameConfirmed = false;
-
-	writeText("ARIAL", 25, "TYPE YOUR NAME. AND PRESS ENTER!", 1, 1, { 255, 255, 255, 255 });
-	render();
-
-	SDL_StartTextInput(window);
-
-	while (nameConfirmed == false && keepGameRunning == true) {
-		SDL_Event event;
-
-		while (SDL_PollEvent(&event)) {
-
-			if (event.type == SDL_EVENT_TEXT_INPUT) {
-				setupName += event.text.text;
-			}
-
-			if (event.type == SDL_EVENT_KEY_DOWN) {
-
-				if (event.key.key == SDLK_BACKSPACE && !setupName.empty()) {
-					setupName.pop_back();
-				}
-
-				if (event.key.key == SDLK_RETURN) {
-
-					if (!setupName.empty()) {
-						player->setPlayerName(setupName);
-						nameConfirmed = true;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	SDL_StopTextInput(window);
-
-}
-
-void Game::settingThePlayerGender(Player* player) {
-	bool genderConfirmed = false;
-
-	clearScreen();
-	writeText("ARIAL", 25, "Is " + player->getPlayerName() + " male or female ? ", 1, 1, { 255, 255, 255, 255 });
-	writeText("ARIAL", 25, "Press [1] for Male. Press [2] for Female", 1, 25, { 255, 255, 255, 255 });
-	render();
-	
-	while (genderConfirmed == false && keepGameRunning == true) {
-		SDL_Event event;
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_EVENT_KEY_DOWN) {
-				if (event.key.key == SDLK_1) {
-					player->setPlayerGender(Player::PlayerGender::MALE);
-					genderConfirmed = true;
-					break;
-				}
-				else if (event.key.key == SDLK_2) {
-					player->setPlayerGender(Player::PlayerGender::FEMALE);
-					genderConfirmed = true;
-					break;
-				}
-			}
-		}
-	}
-
-	if (genderConfirmed == true) {
-		clearScreen();
-		if (player->getPlayerGender() == Player::PlayerGender::MALE) {
-			writeText("ARIAL", 25, player->getPlayerName() + " is male.", 1, 1, { 100, 255, 255, 255 });
-		}
-		else if (player->getPlayerGender() == Player::PlayerGender::FEMALE) {
-			writeText("ARIAL", 25, player->getPlayerName() + " is female.", 1, 1, { 255, 180, 255, 255 });
-		}
-		render();
-	}
-
-}
-
-void Game::settingThePlayerClass(Player* player, Pronouns* pronouns) {
-	bool isPlayerClassConfirmed = false;
-
-	delay(1);
-	clearScreen();
-	writeText("ARIAL", 25, "Great, now what class does " + pronouns->getLSubject(player) + " belongs to?",
-		1, 1, { 255, 255, 255, 255 });
-	writeText("ARIAL", 25, "Press[1] for knight, ", 1, 30, { 200, 200, 200, 255 });	
-	writeText("ARIAL", 25, "[2] for Wizard, ", 220, 30, { 200, 255, 255, 255 });
-	writeText("ARIAL", 25, "[3] for Bard, ", 385, 30, { 255, 255, 200, 255 });
-	writeText("ARIAL", 25, "[4] for Noble", 525, 30, { 255, 200, 200, 255});
-	writeText("ARIAL", 25, "or [5] for Wretch.", 1, 60, { 200, 255, 200, 255});
-	render();
-
-	while (isPlayerClassConfirmed == false) {
-		SDL_Event event;
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_EVENT_KEY_DOWN) {
-				if (event.key.key == SDLK_1) {
-					player->setPlayerClass(Player::PlayerClass::KNIGHT);
-					isPlayerClassConfirmed = true;
-					break;
-				}
-				else if (event.key.key == SDLK_2) {
-					player->setPlayerClass(Player::PlayerClass::WIZARD);
-					isPlayerClassConfirmed = true;
-					break;
-				}
-				else if (event.key.key == SDLK_3) {
-					player->setPlayerClass(Player::PlayerClass::BARD);
-					isPlayerClassConfirmed = true;
-					break;
-				}
-				else if (event.key.key == SDLK_4) {
-					player->setPlayerClass(Player::PlayerClass::NOBLE);
-					isPlayerClassConfirmed = true;
-					break;
-				}
-				else if (event.key.key == SDLK_5) {
-					player->setPlayerClass(Player::PlayerClass::WRETCH);
-					isPlayerClassConfirmed = true;
-					break;
-				}
-			}
-		}
-	}
-
-	if (isPlayerClassConfirmed == true) {
-		player->setPlayerAttributesAccordinglyToClass();
-		player->vomitAllAttr();
-	}
-}
-
 
 //========================================= GAME CORE =====================================//
-
-void Game::setup(Game* game, Player* player, Pronouns* pronouns) {
-	settingHowThePlayerShouldBeCalled(player);
-	settingThePlayerGender(player);
-	settingThePlayerClass(player, pronouns);
-	
-}
 
 //Schedules All scenes. ADD EVERY SCENE HERE IN ORDER!
 void Game::sceneScheduler(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	while (keepGameRunning == true) {
-		setup(game, player, pronouns);
 		firstScene.playScene(game, save, player, pronouns);
-		scene1.playScene(game, save, player, pronouns);
+		scene1.playScene(game, shaders, save, player, pronouns);
 	}
 	
 }
@@ -299,7 +273,7 @@ void Game::loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronoun
 	//ALL SCENES MUST BE HERE FOR A PROPER LOAD. Add "else if"s for new IDs.
 	if (sceneID != 0) { 
 		if (sceneID == scene1.getSceneID()) {
-			scene1.playScene(game, save, player, pronouns);
+			scene1.playScene(game, shaders, save, player, pronouns);
 		}
 		else {
 			//If none of the possible IDs match a scene, reload the setup.
@@ -314,15 +288,21 @@ void Game::loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronoun
 
 void Game::run(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	makeWindow();
+	initAllShaders();
 	loadSceneFromSaveGame(game, save, player, pronouns);
 }
 
 //THIS COMMAND KILLS THE GAME. ONLY USE IT IF THAT IS THE DESIRED FUNCTION.
 void Game::stop() {
+
+	delete shaders;
+	shaders = nullptr;
+
 	TTF_Quit();
 
-	SDL_DestroyRenderer(renderer);
-	renderer = nullptr;
+	
+	SDL_GL_DestroyContext(context);
+	context = nullptr;
 
 	SDL_DestroyWindow(window);
 	window = nullptr;

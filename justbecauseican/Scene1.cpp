@@ -15,9 +15,9 @@ bool Scene1::getSaveData(Save* save, Player* player) {
 		//Apply necessary changes.
 		if (save->saveData.sceneID == SCENE_ID) {
 			player->setPlayerLife(save->saveData.playerLife);
-			player->setPlayerClass(save->saveData.playerClass);
-			player->setPlayerName(save->saveData.playerName);
-			player->setPlayerGender(save->saveData.playerGender);
+			//player->setPlayerClass(save->saveData.playerClass);
+			//player->setPlayerName(save->saveData.playerName);
+			//player->setPlayerGender(save->saveData.playerGender);
 		}
 		return true;
 	}
@@ -29,120 +29,107 @@ bool Scene1::getSaveData(Save* save, Player* player) {
 }
 
 
-void Scene1::playScene(Game* game, Save* save, Player* player, Pronouns* pronouns) {
+void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player, Pronouns* pronouns) {
+	//Define variables for cube movement.
+	glm::vec3 cubePosition(0.0f, 0.0f, 0.0f);
+	float movementSpeed = 5.0f;
+	Uint64 previousTicks = SDL_GetTicks();
 
-    // Starter positions.
-    int playerPosX = 400;
-    int playerPosY = 300;
+	// Camera position in world space.
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
 
-    int tagPosX = playerPosX;
-    int tagPosY = playerPosY;
+	// Where the camera is looking.
+	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    bool moveUp = false;
-    bool moveDown = false;
-    bool moveRight = false;
-    bool moveLeft = false;
+	// Which direction is up.
+	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    // World boundaries.
-    int worldMinX = 20;
-    int worldMaxX = 750;
-    int worldMinY = 50;
-    int worldMaxY = 550;
+	// View matrix: positions and orients the camera.
+	glm::mat4 view = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
+
+	int screenWidth;
+	int screenHeight;
+
+	SDL_GetWindowSizeInPixels(game->window, &screenWidth, &screenHeight);
+
+	float aspectRatio = (float)screenWidth / (float)screenHeight;
+
+	glm::mat4 projection = glm::perspective(
+		glm::radians(45.0f),
+		aspectRatio,
+		0.1f,
+		100.0f
+	);
+
+	glViewport(0, 0, screenWidth, screenHeight);
 
     if (getSaveData(save, player) == false) {
         return;
     }
     else {
         while (game->keepGameRunning == true) {
+			// Calculate delta time.
+			Uint64 currentTicks = SDL_GetTicks();
+			float deltaTime = (currentTicks - previousTicks) / 1000.0f;
+			previousTicks = currentTicks;
 
-            SDL_Event event;
+			//Clear the screen for ever new frame.
+			game->clearScreen();
 
-            while (SDL_PollEvent(&event)) {
+			//Write texts in the screen.
+			game->writeText("ARIAL", 25, "A CUBE!", 1, 1, { 255, 255, 255, 255 });
+			glUseProgram(shaders->textShaderProgram);
 
-                if (event.type == SDL_EVENT_QUIT) {
-                    genNewSave(save, player);
-                    game->stop();
-                }
+			//Activate DEPTH TEST for proper vertex calculations.
+			glEnable(GL_DEPTH_TEST);
 
-                if (event.type == SDL_EVENT_KEY_DOWN) {
+			//Make the model matrix.
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePosition);
 
-                    //Process movement in.
-                    if (event.key.key == SDLK_W) moveUp = true;
-                    if (event.key.key == SDLK_S) moveDown = true;
-                    if (event.key.key == SDLK_D) moveRight = true;
-                    if (event.key.key == SDLK_A) moveLeft = true;
+			//Use the cube shading program.
+			glUseProgram(shaders->cubeShaderProgram);
 
-                    //Quit on ESC.
-                    if (event.key.key == SDLK_ESCAPE) {
-                        genNewSave(save, player);
-                        game->stop();
-                    }
+			//Assing transformation and perspective matrices.
+			glUniformMatrix4fv(shaders->cubeModelLocation, 1, GL_FALSE, glm::value_ptr(model));
+			glUniformMatrix4fv(shaders->cubeViewLocation, 1, GL_FALSE, glm::value_ptr(view));
+			glUniformMatrix4fv(shaders->cubeProjectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
-                }
+			//Bind the vertex array for the Cube Vertex Array Object.
+			glBindVertexArray(shaders->cubeVAO);
 
-                else if (event.type == SDL_EVENT_KEY_UP) {
+			//Draw elements to the screen.
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-                    //Process movement out
-                    if (event.key.key == SDLK_W) moveUp = false;
-                    if (event.key.key == SDLK_S) moveDown = false;
-                    if (event.key.key == SDLK_D) moveRight = false;
-                    if (event.key.key == SDLK_A) moveLeft = false;
+			//RENDER EVERYTHING.
+			game->render();
 
-                }
-               
-            }
+			//Quit the game on ESCAPE.
+			SDL_Event event;
+			while (SDL_PollEvent(&event)) {
+				if (event.type == SDL_EVENT_KEY_DOWN) {
+					if (event.key.key == SDLK_ESCAPE) {
+						game->stop();
+					}
+				}
+			}
 
-            // Calculate intended movement.
-            int nextX = playerPosX;
-            int nextY = playerPosY;
+			// Read keyboard state.
+			const bool* keyboardState = SDL_GetKeyboardState(nullptr);
 
-            if (moveUp) nextY -= 1;
-            if (moveDown) nextY += 1;
-            if (moveRight) nextX += 1;
-            if (moveLeft) nextX -= 1;
+			// Movement.
+			if (keyboardState[SDL_SCANCODE_W])
+				cubePosition.z -= movementSpeed * deltaTime;
 
-            // Check world boundaries.
-            if (nextX >= worldMinX && nextX <= worldMaxX &&
-                nextY >= worldMinY && nextY <= worldMaxY) {
+			if (keyboardState[SDL_SCANCODE_S])
+				cubePosition.z += movementSpeed * deltaTime;
 
-                playerPosX = nextX;
-                playerPosY = nextY;
+			if (keyboardState[SDL_SCANCODE_A])
+				cubePosition.x -= movementSpeed * deltaTime;
 
-            }
-
-            // Update name tag position.
-            tagPosX = playerPosX - 2;
-            tagPosY = playerPosY + 30;
-
-            game->clearScreen();
-
-            // Draw Player's sprite accordingly to class.
-            if (player->getPlayerClass() == Player::PlayerClass::KNIGHT) {
-                game->writeText("ARIAL", 25, "+[]+", playerPosX, playerPosY, { 200, 200, 200, 255 });
-            }
-            else if (player->getPlayerClass() == Player::PlayerClass::WIZARD) {
-                game->writeText("ARIAL", 25, "![]!", playerPosX, playerPosY, { 200, 255, 255, 255 });
-            }
-            else if (player->getPlayerClass() == Player::PlayerClass::BARD) {
-                game->writeText("ARIAL", 25, "[^]{", playerPosX, playerPosY, { 255, 255, 200, 255 });
-            }
-            else if (player->getPlayerClass() == Player::PlayerClass::NOBLE) {
-                game->writeText("ARIAL", 25, "^{~}^", playerPosX, playerPosY, { 255, 200, 200, 255 });
-            }
-            else if (player->getPlayerClass() == Player::PlayerClass::WRETCH) {
-                game->writeText("ARIAL", 25, "[]", playerPosX, playerPosY, { 200, 255, 200, 255 });
-            }
-
-            // Draw Player's name tag, accordingly to gender.
-            if (player->getPlayerGender() == Player::PlayerGender::MALE) {
-                game->writeText("ARIAL", 11, player->getPlayerName(), tagPosX, tagPosY, { 100, 255, 255, 255 });
-            }
-            else if (player->getPlayerGender() == Player::PlayerGender::FEMALE) {
-                game->writeText("ARIAL", 11, player->getPlayerName(), tagPosX, tagPosY, { 255, 180, 255, 255 });
-            }
-
-            game->render();
-
+			if (keyboardState[SDL_SCANCODE_D])
+				cubePosition.x += movementSpeed * deltaTime;
+            
         }
     }
 }
@@ -151,11 +138,11 @@ void Scene1::playScene(Game* game, Save* save, Player* player, Pronouns* pronoun
 void Scene1::genNewSave(Save* save, Player* player) {
 
 	//Set the value of the saved information.
-	save->saveData.sceneID = SCENE_ID + 1; //The save will change this to an invalid ID, and the game will reset.
+	save->saveData.sceneID = SCENE_ID + 1;
 	save->saveData.playerLife = player->getPlayerLife();
-	save->saveData.playerClass = player->getPlayerClass();
-	save->saveData.playerName = player->getPlayerName();
-	save->saveData.playerGender = player->getPlayerGender();
+	//save->saveData.playerClass = player->getPlayerClass();
+	//save->saveData.playerName = player->getPlayerName();
+	//save->saveData.playerGender = player->getPlayerGender();
 
 	save->save("data");
 }

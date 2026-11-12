@@ -5,7 +5,7 @@
 #include "Game.h"
 
 int main() {
-	//If any new pointer is made, declare them here.
+	//Create global pointers.
 	Game* game = new Game();
 	Save* save = new Save();
 	Player* player = new Player();
@@ -14,7 +14,7 @@ int main() {
 	//Run the game.
 	game->run(game, save, player, pronouns);
 
-	//Delete and Nullify pointers.
+	//Delete and Nullify global pointers.
 	delete game;
 	game = nullptr;
 

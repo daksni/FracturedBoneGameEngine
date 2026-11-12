@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\nielm\CppImportedLibraries\SDL3\include;C:\Users\nielm\CppImportedLibraries\SDL_ttf\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\nielm\CppImportedLibraries\SDL3\include;C:\Users\nielm\CppImportedLibraries\SDL_ttf\include;C:\Users\nielm\CppImportedLibraries\GLAD\include;C:\Users\nielm\CppImportedLibraries\glm\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\nielm\CppImportedLibraries\SDL3\include;C:\Users\nielm\CppImportedLibraries\SDL_ttf\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\nielm\CppImportedLibraries\SDL3\include;C:\Users\nielm\CppImportedLibraries\SDL_ttf\include;C:\Users\nielm\CppImportedLibraries\GLAD\include;C:\Users\nielm\CppImportedLibraries\glm\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,11 +139,13 @@
   <ItemGroup>
     <ClCompile Include="FirstScene.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="gl.c" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Pronouns.cpp" />
     <ClCompile Include="Save.cpp" />
     <ClCompile Include="Scene1.cpp" />
     <ClCompile Include="SceneTemplate.cpp" />
+    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="source.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +157,13 @@
     <ClInclude Include="Save.h" />
     <ClInclude Include="Scene1.h" />
     <ClInclude Include="SceneTemplate.h" />
+    <ClInclude Include="Shaders.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cube_fragment.glsl" />
+    <None Include="text_fragment.glsl" />
+    <None Include="text_vertex.glsl" />
+    <None Include="cube_vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

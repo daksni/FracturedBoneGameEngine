@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Game.h"
+#include "Shaders.h"
 
 class Scene1
 {
@@ -12,7 +13,7 @@ private:
 public:
 	
 	bool getSaveData(Save* save, Player* player); //Scan the system for previous saves before loading new scene.
-	void playScene(Game* game, Save* save, Player* player, Pronouns* pronouns); //Load a new scene
+	void playScene(Game* game, Shaders* shaders, Save* save, Player* player, Pronouns* pronouns); //Load a new scene
 	void genNewSave(Save* save, Player* player); //Save any relevant information.
 
 	int const getSceneID();

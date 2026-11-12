@@ -4,7 +4,6 @@
 
 //This is the FirstScene, configure in here what is the first thing that happens in the game.
 
-#include "Game.h"
 #include "FirstScene.h"
 
 
@@ -13,7 +12,7 @@ void FirstScene::playScene(Game* game, Save* save, Player* player, Pronouns* pro
 	bool quitGame = false;
 
 	game->clearScreen();
-	game->writeText("ARIAL", 25, "Your character has been created!", 1, 1, { 255, 255, 255, 255 });
+	game->writeText("ARIAL", 25, "WELCOME TO THE SIM.!", 1, 1, { 255, 255, 255, 255 });
 	game->writeText("ARIAL", 25, "Press[1] to START. Press[2] to QUIT the game.", 1, 30, { 255, 255, 255, 255 });
 	game->render();
 
@@ -49,9 +48,9 @@ void FirstScene::playScene(Game* game, Save* save, Player* player, Pronouns* pro
 		//Set the value of the saved information.
 		save->saveData.sceneID = SCENE_ID + 1;
 		save->saveData.playerLife = player->getPlayerLife();
-		save->saveData.playerClass = player->getPlayerClass();
-		save->saveData.playerName = player->getPlayerName();
-		save->saveData.playerGender = player->getPlayerGender();
+		//save->saveData.playerClass = player->getPlayerClass();
+		//save->saveData.playerName = player->getPlayerName();
+		//save->saveData.playerGender = player->getPlayerGender();
 
 		save->save("data");
 	}

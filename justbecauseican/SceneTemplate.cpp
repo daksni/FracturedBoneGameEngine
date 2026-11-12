@@ -20,9 +20,9 @@ bool SceneTemplate::getSaveData(Save* save, Player* player) {
 		//Apply necessary changes.
 		if (save->saveData.sceneID == SCENE_ID) {
 			player->setPlayerLife(save->saveData.playerLife);
-			player->setPlayerClass(save->saveData.playerClass);
-			player->setPlayerName(save->saveData.playerName);
-			player->setPlayerGender(save->saveData.playerGender);
+			//player->setPlayerClass(save->saveData.playerClass);
+			//player->setPlayerName(save->saveData.playerName);
+			//player->setPlayerGender(save->saveData.playerGender);
 		}
 		return true;
 	}
@@ -55,9 +55,9 @@ void SceneTemplate::genNewSave(Save* save, Player* player) {
 	//Set the value of the saved information.
 	save->saveData.sceneID = SCENE_ID + 1;
 	save->saveData.playerLife = player->getPlayerLife();
-	save->saveData.playerClass = player->getPlayerClass();
-	save->saveData.playerName = player->getPlayerName();
-	save->saveData.playerGender = player->getPlayerGender();
+	//save->saveData.playerClass = player->getPlayerClass();
+	//save->saveData.playerName = player->getPlayerName();
+	//save->saveData.playerGender = player->getPlayerGender();
 
 	save->save("data");
 }
