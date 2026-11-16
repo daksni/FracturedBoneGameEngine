@@ -53,6 +53,15 @@ void Game::getFPS() {
 	}
 }
 
+void Game::VSYNC(bool on_off) {
+	if (on_off) {
+		SDL_GL_SetSwapInterval(1);
+	}
+	else {
+		SDL_GL_SetSwapInterval(0);
+	}
+}
+
 //=============================================== TEXT CREATION =================================================//
 
 int Game::writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color) {
@@ -247,7 +256,6 @@ int Game::makeWindow() {
 
 	// Create OpenGL context.
 	context = SDL_GL_CreateContext(window);
-	SDL_GL_SetSwapInterval(VSYNC);
 
 	if (context == nullptr) {
 		SDL_Log("OpenGL context creation failed: %s", SDL_GetError());
@@ -310,6 +318,7 @@ void Game::loadSceneFromSaveGame(Game* game, Save* save, Player* player, Pronoun
 void Game::run(Game* game, Save* save, Player* player, Pronouns* pronouns) {
 	makeWindow();
 	initAllShaders();
+	VSYNC(false);
 	loadSceneFromSaveGame(game, save, player, pronouns);
 }
 

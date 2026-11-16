@@ -21,7 +21,7 @@ public:
 	int wWidget = 1920; //For now, leave this fullscreen. Later add a method for the user to alter these params.
 	int wHeight = 1089;
 
-	int VSYNC = 0; //Later allow player to control his VSYNC.
+	void VSYNC(bool on_off);
 
 	// Calculate delta time.
 	Uint64 previousTicks = 0;

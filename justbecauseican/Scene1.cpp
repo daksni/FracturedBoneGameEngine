@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "CubeMeshPrimitive.h"
+#include "PlaneMeshPrimitive.h"
 
 bool Scene1::getSaveData(Save* save, Player* player) {
 
@@ -34,12 +35,18 @@ bool Scene1::getSaveData(Save* save, Player* player) {
 void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player, Pronouns* pronouns) {
 	CubeMeshPrimitive cubeMesh;
 	cubeMesh.createMesh();
+
+	PlaneMeshPrimitive planeMesh;
+	planeMesh.createMesh();
 	
 	GameObject cube;
 	cube.setMesh(&cubeMesh);
 
 	GameObject deadCube;
 	deadCube.setMesh(&cubeMesh);
+
+	GameObject plane;
+	plane.setMesh(&planeMesh);
 
 	float movementSpeed = 5.0f;
 
@@ -101,6 +108,13 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 			deadCube.position.y = 0.0f;
 			deadCube.position.z = -10.0f;
 			deadCube.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+			plane.addGameObject(shaders->cubeShaderProgram, shaders->cubeModelLocation);
+			plane.position.x = 0.0f;
+			plane.position.y = -1.0f;
+			plane.position.z = -10.0f;
+			plane.scale = glm::vec3(100.0f, 100.0f, 100.0f);
+			plane.setColor(0.0f, 1.0f, 0.0f, 0.5f);
 
 
 			//Disable depth test for text texture streaming.
