@@ -18,6 +18,26 @@ public:
 
 	Shaders* shaders = new Shaders();
 
+	int wWidget = 1920; //For now, leave this fullscreen. Later add a method for the user to alter these params.
+	int wHeight = 1089;
+
+	int VSYNC = 0; //Later allow player to control his VSYNC.
+
+	// Calculate delta time.
+	Uint64 previousTicks = 0;
+	Uint64 currentTicks = 0;
+	float deltaTime = 0.0f;
+	void setTicks();
+
+	//Calculate FPS
+	float fpsTimer = 0.0f;
+	int frameCount = 0;
+	int currentFPS = 0;
+
+	void getFPS();
+
+	std::string wTitle = "Elder Bone Software -- Fractured Bone Game Engine"; //You may rename the window, or use it to display info.
+
 	void delay(int delayTime);
 	bool keepGameRunning = true;
 

@@ -78,98 +78,6 @@ void Shaders::initTextShaders() {
 }
 
 void Shaders::init3DCubePrimitiveShaders() {
-	//Rendering information.
-	
-
-	float vertices[] = {
-		// Back face
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-
-		// Front face
-		-0.5f, -0.5f,  0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f
-	};
-
-	GLuint indices[] = {
-		// Back face
-		0, 1, 2,
-		2, 3, 0,
-
-		// Front face
-		4, 5, 6,
-		6, 7, 4,
-
-		// Left face
-		0, 3, 7,
-		7, 4, 0,
-
-		// Right face
-		1, 5, 6,
-		6, 2, 1,
-
-		// Bottom face
-		0, 4, 5,
-		5, 1, 0,
-
-		// Top face
-		3, 2, 6,
-		6, 7, 3
-	};
-
-	glGenVertexArrays(1, &cubeVAO);
-	glGenBuffers(1, &cubeVBO);
-
-	// Bind VAO 
-	glBindVertexArray(cubeVAO);
-
-	// Bind VBO
-	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-
-	// Upload vertex data
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		sizeof(vertices),
-		vertices,
-		GL_STATIC_DRAW
-	);
-
-	// Describe vertex attributes
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		3 * sizeof(float),
-		(void*)0
-	);
-
-	//Create the EBO.
-	glGenBuffers(1, &cubeEBO);
-
-	glBindVertexArray(cubeVAO);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeEBO);
-
-	glBufferData(
-		GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(indices),
-		indices,
-		GL_STATIC_DRAW
-	);
-
-
-	glEnableVertexAttribArray(0);
-
-	// Unbind
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-
 
 	//Create Shaders
 	std::string vertexCode = loadShader("cube_vertex.glsl");
@@ -184,7 +92,7 @@ void Shaders::init3DCubePrimitiveShaders() {
 
 
 	//Make and compile Fragment Shader.
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	const char* fragmentSource = fragmentCode.c_str();
 	glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
 	glCompileShader(fragmentShader);
@@ -212,9 +120,6 @@ Shaders::~Shaders() {
 	glDeleteBuffers(1, &textVBO);
 	glDeleteProgram(textShaderProgram);
 
-	glDeleteVertexArrays(1, &cubeVAO);
-	glDeleteBuffers(1, &cubeVBO);
-	glDeleteBuffers(1, &cubeEBO);
 	glDeleteProgram(cubeShaderProgram);
 
 }

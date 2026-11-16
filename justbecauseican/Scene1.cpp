@@ -7,7 +7,9 @@
 //Ideally, you will copy every new scene, and only change what is saved and what is pulled. As well as what happens in the scene.
 
 #include "Scene1.h"
-
+#include "GameObject.h"
+#include "Mesh.h"
+#include "CubeMeshPrimitive.h"
 
 bool Scene1::getSaveData(Save* save, Player* player) {
 
@@ -30,10 +32,16 @@ bool Scene1::getSaveData(Save* save, Player* player) {
 
 
 void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player, Pronouns* pronouns) {
-	//Define variables for cube movement.
-	glm::vec3 cubePosition(0.0f, 0.0f, 0.0f);
+	CubeMeshPrimitive cubeMesh;
+	cubeMesh.createMesh();
+	
+	GameObject cube;
+	cube.setMesh(&cubeMesh);
+
+	GameObject deadCube;
+	deadCube.setMesh(&cubeMesh);
+
 	float movementSpeed = 5.0f;
-	Uint64 previousTicks = SDL_GetTicks();
 
 	// Camera position in world space.
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -68,38 +76,39 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
     }
     else {
         while (game->keepGameRunning == true) {
-			// Calculate delta time.
-			Uint64 currentTicks = SDL_GetTicks();
-			float deltaTime = (currentTicks - previousTicks) / 1000.0f;
-			previousTicks = currentTicks;
-
 			//Clear the screen for ever new frame.
 			game->clearScreen();
 
-			//Write texts in the screen.
-			game->writeText("ARIAL", 25, "A CUBE!", 1, 1, { 255, 255, 255, 255 });
-			glUseProgram(shaders->textShaderProgram);
+			game->setTicks();
+
+			//Gets the FPS.
+			game->getFPS();
 
 			//Activate DEPTH TEST for proper vertex calculations.
 			glEnable(GL_DEPTH_TEST);
 
-			//Make the model matrix.
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePosition);
-
-			//Use the cube shading program.
 			glUseProgram(shaders->cubeShaderProgram);
 
-			//Assing transformation and perspective matrices.
-			glUniformMatrix4fv(shaders->cubeModelLocation, 1, GL_FALSE, glm::value_ptr(model));
 			glUniformMatrix4fv(shaders->cubeViewLocation, 1, GL_FALSE, glm::value_ptr(view));
 			glUniformMatrix4fv(shaders->cubeProjectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
-			//Bind the vertex array for the Cube Vertex Array Object.
-			glBindVertexArray(shaders->cubeVAO);
+			cube.addGameObject(shaders->cubeShaderProgram, shaders->cubeModelLocation);
+			cube.setColor(0.0f, 0.0f, 1.0f, 1.0f);
 
-			//Draw elements to the screen.
-			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+			deadCube.addGameObject(shaders->cubeShaderProgram, shaders->cubeModelLocation);
+			deadCube.position.x = 3.0f;
+			deadCube.position.y = 0.0f;
+			deadCube.position.z = -10.0f;
+			deadCube.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+
+			//Disable depth test for text texture streaming.
+			glDisable(GL_DEPTH_TEST);
+
+			//Write texts in the screen.
+			game->writeText("ARIAL", 40, "FPS: " + std::to_string(game->currentFPS), 1, 1, {255, 255, 255, 255});
+			glUseProgram(shaders->textShaderProgram);
 
 			//RENDER EVERYTHING.
 			game->render();
@@ -119,16 +128,16 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 
 			// Movement.
 			if (keyboardState[SDL_SCANCODE_W])
-				cubePosition.z -= movementSpeed * deltaTime;
+				cube.position.z -= movementSpeed * game->deltaTime;
 
 			if (keyboardState[SDL_SCANCODE_S])
-				cubePosition.z += movementSpeed * deltaTime;
+				cube.position.z += movementSpeed * game->deltaTime;
 
 			if (keyboardState[SDL_SCANCODE_A])
-				cubePosition.x -= movementSpeed * deltaTime;
+				cube.position.x -= movementSpeed * game->deltaTime;
 
 			if (keyboardState[SDL_SCANCODE_D])
-				cubePosition.x += movementSpeed * deltaTime;
+				cube.position.x += movementSpeed * game->deltaTime;
             
         }
     }

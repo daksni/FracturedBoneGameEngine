@@ -33,6 +33,26 @@ void Game::initAllShaders() {
 	shaders->init3DCubePrimitiveShaders();
 }
 
+void Game::setTicks() {
+
+	currentTicks = SDL_GetTicks();
+
+	deltaTime = (currentTicks - previousTicks) / 1000.0f;
+
+	previousTicks = currentTicks;
+}
+
+void Game::getFPS() {
+	fpsTimer += deltaTime;
+	frameCount++;
+
+	if (fpsTimer >= 1.0f) {
+		currentFPS = frameCount;
+		frameCount = 0;
+		fpsTimer = 0.0f;
+	}
+}
+
 //=============================================== TEXT CREATION =================================================//
 
 int Game::writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color) {
@@ -213,9 +233,9 @@ int Game::makeWindow() {
 
 	// Create the OpenGL window.
 	window = SDL_CreateWindow(
-		"Elder Bone Software -- Fractured Bone Game Engine",
-		1920,
-		1080,
+		wTitle.c_str(),
+		wWidget,
+		wHeight,
 		SDL_WINDOW_OPENGL
 	);
 
@@ -227,6 +247,7 @@ int Game::makeWindow() {
 
 	// Create OpenGL context.
 	context = SDL_GL_CreateContext(window);
+	SDL_GL_SetSwapInterval(VSYNC);
 
 	if (context == nullptr) {
 		SDL_Log("OpenGL context creation failed: %s", SDL_GetError());
