@@ -9,8 +9,7 @@
 #include "Scene1.h"
 #include "GameObject.h"
 #include "Mesh.h"
-#include "CubeMeshPrimitive.h"
-#include "PlaneMeshPrimitive.h"
+#include "3D_Primitves.h"
 
 bool Scene1::getSaveData(Save* save, Player* player) {
 
@@ -38,6 +37,10 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 
 	PlaneMeshPrimitive planeMesh;
 	planeMesh.createMesh();
+
+	SphereMeshPrimitive sphereMesh;
+	sphereMesh.setRes(32, 16);
+	sphereMesh.createMesh();
 	
 	GameObject cube;
 	cube.setMesh(&cubeMesh);
@@ -47,6 +50,9 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 
 	GameObject plane;
 	plane.setMesh(&planeMesh);
+
+	GameObject sphere;
+	sphere.setMesh(&sphereMesh);
 
 	float movementSpeed = 5.0f;
 
@@ -94,27 +100,31 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 			//Activate DEPTH TEST for proper vertex calculations.
 			glEnable(GL_DEPTH_TEST);
 
-			glUseProgram(shaders->cubeShaderProgram);
+			glUseProgram(shaders->meshShaderProgram);
 
-			glUniformMatrix4fv(shaders->cubeViewLocation, 1, GL_FALSE, glm::value_ptr(view));
-			glUniformMatrix4fv(shaders->cubeProjectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(shaders->meshViewLocation, 1, GL_FALSE, glm::value_ptr(view));
+			glUniformMatrix4fv(shaders->meshProjectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
-			cube.addGameObject(shaders->cubeShaderProgram, shaders->cubeModelLocation);
+			cube.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
 			cube.setColor(0.0f, 0.0f, 1.0f, 1.0f);
 
 
-			deadCube.addGameObject(shaders->cubeShaderProgram, shaders->cubeModelLocation);
+			deadCube.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
 			deadCube.position.x = 3.0f;
 			deadCube.position.y = 0.0f;
 			deadCube.position.z = -10.0f;
 			deadCube.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
-			plane.addGameObject(shaders->cubeShaderProgram, shaders->cubeModelLocation);
+			plane.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
 			plane.position.x = 0.0f;
 			plane.position.y = -1.0f;
 			plane.position.z = -10.0f;
 			plane.scale = glm::vec3(100.0f, 100.0f, 100.0f);
 			plane.setColor(0.0f, 1.0f, 0.0f, 0.5f);
+
+			sphere.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
+			sphere.position = glm::vec3(-2.0f, 0.0f, -4.0f);
+			sphere.setColor(0.5f, 0.5f, 1.0f, 1.0f);
 
 
 			//Disable depth test for text texture streaming.

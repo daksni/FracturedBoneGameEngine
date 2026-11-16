@@ -30,7 +30,7 @@ void Game::render() {
 
 void Game::initAllShaders() {
 	shaders->initTextShaders();
-	shaders->init3DCubePrimitiveShaders();
+	shaders->init3D_PrimitiveShaders();
 }
 
 void Game::setTicks() {
@@ -66,7 +66,7 @@ void Game::VSYNC(bool on_off) {
 
 int Game::writeText(std::string fontName, int fontSize, std::string text, float x_coord, float y_coord, SDL_Color color) {
 	// Locate and configure the font.
-	std::string fontPath = fontName + ".ttf";
+	std::string fontPath = "fonts\\" + fontName + ".ttf";
 
 	font = TTF_OpenFont(
 		fontPath.c_str(),

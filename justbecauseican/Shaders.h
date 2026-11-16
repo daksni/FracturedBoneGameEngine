@@ -8,15 +8,15 @@ public:
 	GLuint textShaderProgram = 0;
 
 	
-	GLuint cubeShaderProgram = 0;
-	GLint cubeModelLocation = -1;
-	GLint cubeViewLocation = -1;
-	GLint cubeProjectionLocation = -1;
+	GLuint meshShaderProgram = 0;
+	GLint meshModelLocation = -1;
+	GLint meshViewLocation = -1;
+	GLint meshProjectionLocation = -1;
 
 	std::string loadShader(const std::string& filePath);
 
 	void initTextShaders();
-	void init3DCubePrimitiveShaders();
+	void init3D_PrimitiveShaders();
 	~Shaders();
 };
 

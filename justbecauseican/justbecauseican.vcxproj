@@ -151,8 +151,10 @@
     <ClCompile Include="SceneTemplate.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="source.cpp" />
+    <ClCompile Include="SphereMeshPrimitive.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3D_Primitves.h" />
     <ClInclude Include="All.h" />
     <ClInclude Include="CubeMeshPrimitive.h" />
     <ClInclude Include="FirstScene.h" />
@@ -166,12 +168,13 @@
     <ClInclude Include="Scene1.h" />
     <ClInclude Include="SceneTemplate.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="SphereMeshPrimitive.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cube_fragment.glsl" />
+    <None Include="prim_mesh_frag.glsl" />
     <None Include="text_fragment.glsl" />
     <None Include="text_vertex.glsl" />
-    <None Include="cube_vertex.glsl" />
+    <None Include="prim_mesh_vrtx.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

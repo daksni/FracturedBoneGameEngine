@@ -57,6 +57,9 @@
     <ClCompile Include="PlaneMeshPrimitive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SphereMeshPrimitive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -98,12 +101,18 @@
     <ClInclude Include="PlaneMeshPrimitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SphereMeshPrimitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3D_Primitves.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="cube_vertex.glsl">
+    <None Include="prim_mesh_vrtx.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="cube_fragment.glsl">
+    <None Include="prim_mesh_frag.glsl">
       <Filter>Source Files</Filter>
     </None>
     <None Include="text_vertex.glsl">

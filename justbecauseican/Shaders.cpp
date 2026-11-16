@@ -3,7 +3,7 @@
 //============================= LOAD SHADER =========================================//
 std::string Shaders::loadShader(const std::string& filePath)
 {
-	std::ifstream file(filePath);
+	std::ifstream file("shaders\\" + filePath + ".glsl");
 	std::stringstream buffer;
 
 	buffer << file.rdbuf();
@@ -49,8 +49,8 @@ void Shaders::initTextShaders() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Create texture shaders
-	std::string textVertexCode = loadShader("text_vertex.glsl");
-	std::string textFragmentCode = loadShader("text_fragment.glsl");
+	std::string textVertexCode = loadShader("text_vertex");
+	std::string textFragmentCode = loadShader("text_fragment");
 
 	//Make and compile text Vertex shader
 	GLuint textVertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -77,11 +77,11 @@ void Shaders::initTextShaders() {
 
 }
 
-void Shaders::init3DCubePrimitiveShaders() {
+void Shaders::init3D_PrimitiveShaders() {
 
 	//Create Shaders
-	std::string vertexCode = loadShader("cube_vertex.glsl");
-	std::string fragmentCode = loadShader("cube_fragment.glsl");
+	std::string vertexCode = loadShader("prim_mesh_vrtx");
+	std::string fragmentCode = loadShader("prim_mesh_frag");
 
 
 	//Make and compile Vertex Shader.
@@ -99,15 +99,15 @@ void Shaders::init3DCubePrimitiveShaders() {
 
 
 	//Make Shader Program.
-	cubeShaderProgram = glCreateProgram();
+	meshShaderProgram = glCreateProgram();
 
-	glAttachShader(cubeShaderProgram, vertexShader);
-	glAttachShader(cubeShaderProgram, fragmentShader);
-	glLinkProgram(cubeShaderProgram);
+	glAttachShader(meshShaderProgram, vertexShader);
+	glAttachShader(meshShaderProgram, fragmentShader);
+	glLinkProgram(meshShaderProgram);
 
-	cubeModelLocation = glGetUniformLocation(cubeShaderProgram, "model");
-	cubeViewLocation = glGetUniformLocation(cubeShaderProgram, "view");
-	cubeProjectionLocation = glGetUniformLocation(cubeShaderProgram, "projection");
+	meshModelLocation = glGetUniformLocation(meshShaderProgram, "model");
+	meshViewLocation = glGetUniformLocation(meshShaderProgram, "view");
+	meshProjectionLocation = glGetUniformLocation(meshShaderProgram, "projection");
 
 	//Delete the shaders.
 	glDeleteShader(vertexShader);
@@ -120,6 +120,6 @@ Shaders::~Shaders() {
 	glDeleteBuffers(1, &textVBO);
 	glDeleteProgram(textShaderProgram);
 
-	glDeleteProgram(cubeShaderProgram);
+	glDeleteProgram(meshShaderProgram);
 
 }

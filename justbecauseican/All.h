@@ -12,6 +12,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include <cmath>
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <glad/gl.h>
