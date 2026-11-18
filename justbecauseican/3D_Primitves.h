@@ -8,3 +8,5 @@
 #include "CubeMeshPrimitive.h"
 #include "PlaneMeshPrimitive.h"
 #include "SphereMeshPrimitive.h"
+#include "CylinderMeshPrimitive.h"
+#include "CapsuleMeshPrimitive.h"

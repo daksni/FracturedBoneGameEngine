@@ -137,7 +137,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CapsuleMeshPrimitive.cpp" />
     <ClCompile Include="CubeMeshPrimitive.cpp" />
+    <ClCompile Include="CylinderMeshPrimitive.cpp" />
     <ClCompile Include="FirstScene.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -156,7 +158,9 @@
   <ItemGroup>
     <ClInclude Include="3D_Primitves.h" />
     <ClInclude Include="All.h" />
+    <ClInclude Include="CapsuleMeshPrimitive.h" />
     <ClInclude Include="CubeMeshPrimitive.h" />
+    <ClInclude Include="CylinderMeshPrimitive.h" />
     <ClInclude Include="FirstScene.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />

@@ -60,6 +60,12 @@
     <ClCompile Include="SphereMeshPrimitive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CylinderMeshPrimitive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleMeshPrimitive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -105,6 +111,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="3D_Primitves.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CylinderMeshPrimitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleMeshPrimitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

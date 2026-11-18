@@ -32,6 +32,10 @@ bool Scene1::getSaveData(Save* save, Player* player) {
 
 
 void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player, Pronouns* pronouns) {
+	CapsuleMeshPrimitive capsuleMesh;
+	capsuleMesh.setRes(32, 8);
+	capsuleMesh.createMesh();
+
 	CubeMeshPrimitive cubeMesh;
 	cubeMesh.createMesh();
 
@@ -41,6 +45,10 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 	SphereMeshPrimitive sphereMesh;
 	sphereMesh.setRes(32, 16);
 	sphereMesh.createMesh();
+
+	CylinderMeshPrimitive cylinderMesh;
+	cylinderMesh.setRes(32);
+	cylinderMesh.createMesh();
 	
 	GameObject cube;
 	cube.setMesh(&cubeMesh);
@@ -53,6 +61,12 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 
 	GameObject sphere;
 	sphere.setMesh(&sphereMesh);
+
+	GameObject cylinder;
+	cylinder.setMesh(&cylinderMesh);
+
+	GameObject capsule;
+	capsule.setMesh(&capsuleMesh);
 
 	float movementSpeed = 5.0f;
 
@@ -100,32 +114,39 @@ void Scene1::playScene(Game* game, Shaders* shaders, Save* save, Player* player,
 			//Activate DEPTH TEST for proper vertex calculations.
 			glEnable(GL_DEPTH_TEST);
 
+			//Set shader programs, and define projection and view matrices for meshes.
 			glUseProgram(shaders->meshShaderProgram);
 
 			glUniformMatrix4fv(shaders->meshViewLocation, 1, GL_FALSE, glm::value_ptr(view));
 			glUniformMatrix4fv(shaders->meshProjectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
+			//Create Meshes and Configure Them.
 			cube.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
 			cube.setColor(0.0f, 0.0f, 1.0f, 1.0f);
 
-
-			deadCube.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
-			deadCube.position.x = 3.0f;
-			deadCube.position.y = 0.0f;
-			deadCube.position.z = -10.0f;
-			deadCube.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-
 			plane.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
-			plane.position.x = 0.0f;
-			plane.position.y = -1.0f;
-			plane.position.z = -10.0f;
+			plane.position = glm::vec3(0.0f, -1.0f, -10.0f);
 			plane.scale = glm::vec3(100.0f, 100.0f, 100.0f);
 			plane.setColor(0.0f, 1.0f, 0.0f, 0.5f);
 
-			sphere.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
-			sphere.position = glm::vec3(-2.0f, 0.0f, -4.0f);
-			sphere.setColor(0.5f, 0.5f, 1.0f, 1.0f);
 
+			deadCube.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
+			deadCube.position.x = 5.0f;
+			deadCube.position.z = -10.0f;
+			deadCube.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+			sphere.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
+			sphere.position = glm::vec3(-3.5f, 0.0f, -3.0f);
+			sphere.setColor(1.0f, 0.5f, 0.0f, 1.0f);
+
+			cylinder.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
+			cylinder.position = glm::vec3(2.0f, -1.5f, -7.0f);
+			cylinder.scale = glm::vec3(1.0f, 5.0f, 1.0f);
+			cylinder.setColor(0.0f, 1.0f, 0.5f, 1.0f);
+
+			capsule.addGameObject(shaders->meshShaderProgram, shaders->meshModelLocation);
+			capsule.position = glm::vec3(0.0f, 0.0f, -8.0f);
+			capsule.setColor(1.0f, 0.0f, 1.0f, 1.0f);
 
 			//Disable depth test for text texture streaming.
 			glDisable(GL_DEPTH_TEST);
